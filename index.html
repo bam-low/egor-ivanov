@@ -34,6 +34,7 @@
       <a href="#services">Услуги</a>
       <a href="#works">Работы</a>
       <a href="#process">Процесс</a>
+      <a href="#reviews">Отзывы</a>
     </nav>
     <a class="btn btn--gradient nav__cta" href="#contact">Написать</a>
     <button class="nav__burger" aria-label="Меню" aria-expanded="false"><span></span><span></span></button>
@@ -230,19 +231,117 @@
       </ol>
     </section>
 
+    <!-- ============ REVIEWS ============ -->
+    <section class="section reviews" id="reviews">
+      <div class="section__head section__head--row reveal">
+        <div>
+          <span class="label">05 — Отзывы</span>
+          <h2 class="h2">Что говорят клиенты</h2>
+        </div>
+        <span class="reviews__source">Реальные отзывы с&nbsp;Kwork</span>
+      </div>
+
+      <div class="reviews__grid">
+        <article class="review review--featured reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">Всем рекомендую исполнителя! Более компетентного, подкованного в&nbsp;своей сфере и&nbsp;отзывчивого исполнителя не&nbsp;встречала. Выполнил всё в&nbsp;срок, с&nbsp;огромным количеством правок с&nbsp;моей стороны, принимал активное участие в&nbsp;улучшении проекта, всегда был на&nbsp;связи. Очень неравнодушный и&nbsp;понимающий человек. Если у&nbsp;вас сложный заказ&nbsp;— то&nbsp;его под силу выполнить по-настоящему качественно только этому исполнителю!</p>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:250">K</span>
+            <span><b>komsomolecdonbassa</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+        <article class="review review--wide reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">С&nbsp;этим исполнителем не&nbsp;то что можно иметь дело, а&nbsp;нужно! Очень приятно было с&nbsp;ним посотрудничать. Всё делал без вопросов, пока не&nbsp;будет результата&nbsp;— это главное! Спасибо, буду ещё обращаться!</p>
+          <ul class="review__tags"><li>Всегда на связи</li><li>Решает любые задачи по сайту</li><li>Коммуникабельный</li><li>Креативный</li><li>Помог решить вопрос вне задания кворка</li></ul>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:307">N</span>
+            <span><b>newrusart</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+        <article class="review reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">Работа выполнена на&nbsp;отлично. Всё чётко, оперативно и&nbsp;приятно. Благодарю!</p>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:4">L</span>
+            <span><b>lovebrelok</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+        <article class="review reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">Спасибо, всё сделано в&nbsp;соответствии с&nbsp;ТЗ!</p>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:61">R</span>
+            <span><b>RomanovDirect</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+        <article class="review reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">Всё быстро и&nbsp;круто. Спасибо!</p>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:118">G</span>
+            <span><b>Grin4s</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+        <article class="review reveal">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <p class="review__text">Лучший)</p>
+          <footer class="review__author">
+            <span class="review__ava" style="--h:175">M</span>
+            <span><b>mi-le</b><small>Отзыв на Kwork</small></span>
+          </footer>
+        </article>
+      </div>
+    </section>
+
     <!-- ============ CONTACT ============ -->
     <section class="section contact" id="contact">
-      <div class="contact__card reveal">
-        <div class="contact__glow" aria-hidden="true"></div>
-        <span class="label">05 — Контакты</span>
-        <h2 class="contact__title">Давайте сделаем<br /><span class="scribble">что-то крутое</span></h2>
-        <p class="contact__text">Расскажите о&nbsp;проекте — отвечу в&nbsp;течение дня и&nbsp;предложу решение.</p>
+      <div class="contact__card" data-contact>
+        <div class="contact__bg" aria-hidden="true">
+          <span class="blob blob--1"></span>
+          <span class="blob blob--2"></span>
+          <span class="blob blob--3"></span>
+          <span class="contact__floor"></span>
+          <span class="contact__spot"></span>
+        </div>
+        <canvas class="contact__fx" aria-hidden="true"></canvas>
 
-        <div class="contact__links">
-          <!-- TODO: подставить реальные контакты -->
-          <a class="btn btn--lime" href="https://t.me/username" target="_blank" rel="noopener">Telegram <span class="arrow">↗</span></a>
-          <a class="btn btn--ghost" href="mailto:hello@example.com">hello@example.com</a>
-          <a class="btn btn--ghost" href="https://kwork.ru/" target="_blank" rel="noopener">Профиль на Kwork <span class="arrow">↗</span></a>
+        <div class="contact__shapes" aria-hidden="true">
+          <span class="shape shape--star" style="--x:9%;--y:18%;--d:1.4;--r:-12deg">✦</span>
+          <span class="shape shape--ring" style="--x:86%;--y:14%;--d:.8"></span>
+          <span class="shape shape--pill" style="--x:84%;--y:62%;--d:1.2;--r:10deg">привет 👋</span>
+          <span class="shape shape--dot" style="--x:14%;--y:70%;--d:.6"></span>
+          <span class="shape shape--star shape--small" style="--x:72%;--y:30%;--d:1.8;--r:20deg">✦</span>
+          <span class="shape shape--squiggle" style="--x:6%;--y:52%;--d:1;--r:-8deg">
+            <svg viewBox="0 0 80 24" fill="none"><path d="M2 12c8-10 14 10 22 0s14 10 22 0 14 10 22 0 10 6 10 6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
+          <span class="shape shape--at" style="--x:90%;--y:40%;--d:1.5;--r:-14deg">@</span>
+        </div>
+
+        <div class="contact__content">
+          <span class="label contact__label">06 — Контакты</span>
+          <h2 class="contact__title" aria-label="Давайте сделаем что-то крутое">
+            <span class="contact__line" data-split>Давайте сделаем</span>
+            <span class="contact__line contact__line--accent">
+              <span data-split>что-то крутое</span>
+              <svg class="contact__underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 14 C 60 4, 120 4, 170 10 S 260 16, 297 6" pathLength="1"/></svg>
+            </span>
+          </h2>
+          <p class="contact__text">Расскажите о&nbsp;проекте — отвечу в&nbsp;течение дня и&nbsp;предложу решение.</p>
+
+          <div class="contact__links">
+            <!-- TODO: подставить реальные контакты -->
+            <a class="btn btn--lime magnetic" href="https://t.me/username" target="_blank" rel="noopener" data-burst>Telegram <span class="arrow">↗</span></a>
+            <a class="btn btn--ghost magnetic" href="mailto:hello@example.com" data-burst>hello@example.com</a>
+            <a class="btn btn--ghost magnetic" href="https://kwork.ru/" target="_blank" rel="noopener" data-burst>Профиль на Kwork <span class="arrow">↗</span></a>
+          </div>
+        </div>
+
+        <div class="contact__ticker" aria-hidden="true">
+          <div class="contact__ticker-track">
+            <span>Напишите мне</span><b>✦</b><span>Обсудим проект</span><b>✦</b><span>Сделаем круто</span><b>✦</b>
+            <span>Напишите мне</span><b>✦</b><span>Обсудим проект</span><b>✦</b><span>Сделаем круто</span><b>✦</b>
+          </div>
         </div>
       </div>
     </section>

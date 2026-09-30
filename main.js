@@ -1,18 +1,28 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Разбиваем заголовок на буквы для анимации появления
-  let i = 0;
+  // Разбиваем заголовки на слова и буквы для анимации появления.
+  // Нумерация букв (--i) своя для каждого заголовка.
+  const counters = new Map();
   document.querySelectorAll('[data-split]').forEach((line) => {
-    const text = line.textContent;
+    const heading = line.closest('h1, h2') || line;
+    let i = counters.get(heading) || 0;
+    const words = line.textContent.trim().split(/\s+/);
     line.textContent = '';
-    for (const char of text) {
-      const span = document.createElement('span');
-      span.className = 'ch';
-      span.style.setProperty('--i', i++);
-      span.textContent = char === ' ' ? ' ' : char;
-      line.appendChild(span);
-    }
+    words.forEach((word, w) => {
+      const wordEl = document.createElement('span');
+      wordEl.className = 'word';
+      for (const char of word) {
+        const span = document.createElement('span');
+        span.className = 'ch';
+        span.style.setProperty('--i', i++);
+        span.textContent = char;
+        wordEl.appendChild(span);
+      }
+      line.appendChild(wordEl);
+      if (w < words.length - 1) line.appendChild(document.createTextNode(' '));
+    });
+    counters.set(heading, i);
   });
   requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('is-loaded')));
 
@@ -81,6 +91,135 @@
       requestAnimationFrame(loop);
     };
     loop();
+  }
+
+  // ============ Контакты: вау-появление ============
+  const card = document.querySelector('[data-contact]');
+  if (card) {
+    const fx = card.querySelector('.contact__fx');
+    const ctx = fx.getContext('2d');
+    const colors = ['#d4ff3f', '#7c5cff', '#ff4fd8', '#ffffff', '#a996ff'];
+    let particles = [];
+    let running = false;
+
+    const sizeFx = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      fx.width = card.clientWidth * dpr;
+      fx.height = card.clientHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    sizeFx();
+    window.addEventListener('resize', sizeFx);
+
+    // Конфетти: x, y — точка взрыва внутри карточки
+    const burst = (x, y, count = 120, power = 1) => {
+      if (reduceMotion) return;
+      for (let n = 0; n < count; n++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = (4 + Math.random() * 9) * power;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4 * power,
+          size: 4 + Math.random() * 7,
+          color: colors[(Math.random() * colors.length) | 0],
+          rot: Math.random() * Math.PI,
+          vr: (Math.random() - 0.5) * 0.4,
+          shape: Math.random() < 0.3 ? 'circle' : Math.random() < 0.5 ? 'star' : 'rect',
+          life: 1,
+          decay: 0.006 + Math.random() * 0.008,
+        });
+      }
+      if (!running) { running = true; requestAnimationFrame(tick); }
+    };
+
+    const drawStar = (r) => {
+      ctx.beginPath();
+      for (let k = 0; k < 8; k++) {
+        const rad = k % 2 ? r * 0.35 : r;
+        const a = (k * Math.PI) / 4;
+        ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+      }
+      ctx.closePath();
+      ctx.fill();
+    };
+
+    const tick = () => {
+      ctx.clearRect(0, 0, fx.width, fx.height);
+      particles = particles.filter((p) => p.life > 0);
+      for (const p of particles) {
+        p.vx *= 0.985;
+        p.vy = p.vy * 0.985 + 0.22;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= p.decay;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.5));
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill(); }
+        else if (p.shape === 'star') drawStar(p.size * 0.8);
+        else ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        ctx.restore();
+      }
+      if (particles.length) requestAnimationFrame(tick);
+      else running = false;
+    };
+
+    const go = () => {
+      card.classList.add('is-live');
+      // два залпа из нижних углов и один из центра, когда карточка раскрылась
+      setTimeout(() => {
+        const w = card.clientWidth, h = card.clientHeight;
+        burst(w * 0.12, h * 0.9, 90, 1.1);
+        burst(w * 0.88, h * 0.9, 90, 1.1);
+      }, 700);
+      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 140, 1.2), 1500);
+    };
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      card.classList.add('is-live');
+    } else {
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { go(); obs.disconnect(); }
+      }, { threshold: 0.35 });
+      obs.observe(card);
+    }
+
+    // Прожектор и параллакс фигур за курсором
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', `${x * 100}%`);
+      card.style.setProperty('--my', `${y * 100}%`);
+      card.style.setProperty('--px', (x - 0.5) * 2);
+      card.style.setProperty('--py', (y - 0.5) * 2);
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--px', 0);
+      card.style.setProperty('--py', 0);
+    });
+
+    // Магнитные кнопки + конфетти по клику
+    card.querySelectorAll('.magnetic').forEach((btn) => {
+      if (window.matchMedia('(hover: hover)').matches && !reduceMotion) {
+        btn.addEventListener('pointermove', (e) => {
+          const r = btn.getBoundingClientRect();
+          const dx = e.clientX - (r.left + r.width / 2);
+          const dy = e.clientY - (r.top + r.height / 2);
+          btn.style.transform = `translate(${dx * 0.25}px, ${dy * 0.35}px)`;
+        });
+        btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+      }
+      btn.addEventListener('click', () => {
+        const r = btn.getBoundingClientRect();
+        const c = card.getBoundingClientRect();
+        burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 60, 0.8);
+      });
+    });
   }
 
   document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
