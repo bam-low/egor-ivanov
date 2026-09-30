@@ -34,7 +34,16 @@ function useImage(src) {
 
   const smooth = { x: 0, y: 0 };
   const start = performance.now();
+  // цикл спит, пока первый экран не виден
+  let visible = true;
+  let rafId = 0;
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !rafId) rafId = requestAnimationFrame(loop);
+  }).observe(stage);
   const loop = (now) => {
+    rafId = 0;
+    if (!visible) return;
     const t = (now - start) / 1000;
     const tx = pointer.active ? pointer.x : Math.sin(t * 0.6) * 0.3;
     const ty = pointer.active ? pointer.y : Math.sin(t * 0.8) * 0.15;
@@ -43,9 +52,9 @@ function useImage(src) {
     const lift = Math.sin(t * 1.3) * 8;
     img.style.transform =
       `translate3d(${smooth.x * 10}px, ${lift}px, 0) rotateY(${smooth.x * 12}deg) rotateX(${-smooth.y * 8}deg)`;
-    requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(loop);
   };
-  requestAnimationFrame(loop);
+  rafId = requestAnimationFrame(loop);
 }
 
 async function init() {

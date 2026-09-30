@@ -74,23 +74,25 @@
   // Кастомный курсор
   const cursor = document.querySelector('.cursor');
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion) {
-    let x = 0, y = 0, cx = 0, cy = 0;
+    let x = 0, y = 0, cx = 0, cy = 0, looping = false;
     window.addEventListener('pointermove', (e) => {
       x = e.clientX; y = e.clientY;
       cursor.classList.add('is-active');
-    });
+      if (!looping) { looping = true; requestAnimationFrame(loop); }
+    }, { passive: true });
     document.addEventListener('pointerleave', () => cursor.classList.remove('is-active'));
     document.querySelectorAll('a, button, .service, .tools__list li').forEach((el) => {
       el.addEventListener('pointerenter', () => cursor.classList.add('is-hover'));
       el.addEventListener('pointerleave', () => cursor.classList.remove('is-hover'));
     });
+    // цикл работает, только пока точка догоняет мышь
     const loop = () => {
       cx += (x - cx) * 0.2;
       cy += (y - cy) * 0.2;
       cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      requestAnimationFrame(loop);
+      if (Math.abs(x - cx) + Math.abs(y - cy) > 0.3) requestAnimationFrame(loop);
+      else looping = false;
     };
-    loop();
   }
 
   // ============ Контакты: вау-появление ============
@@ -103,7 +105,7 @@
     let running = false;
 
     const sizeFx = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       fx.width = card.clientWidth * dpr;
       fx.height = card.clientHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -188,20 +190,27 @@
       obs.observe(card);
     }
 
-    // Прожектор и параллакс фигур за курсором
-    card.addEventListener('pointermove', (e) => {
+    // Прожектор и параллакс фигур за курсором.
+    // Обновляем не чаще раза за кадр и только transform / переменные контейнера фигур.
+    const spot = card.querySelector('.contact__spot');
+    const shapes = card.querySelector('.contact__shapes');
+    let mouse = null, queued = false;
+    const applyMouse = () => {
+      queued = false;
+      if (!mouse) {
+        shapes.style.setProperty('--px', 0);
+        shapes.style.setProperty('--py', 0);
+        return;
+      }
       const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      card.style.setProperty('--mx', `${x * 100}%`);
-      card.style.setProperty('--my', `${y * 100}%`);
-      card.style.setProperty('--px', (x - 0.5) * 2);
-      card.style.setProperty('--py', (y - 0.5) * 2);
-    });
-    card.addEventListener('pointerleave', () => {
-      card.style.setProperty('--px', 0);
-      card.style.setProperty('--py', 0);
-    });
+      const x = mouse.x - r.left, y = mouse.y - r.top;
+      spot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      shapes.style.setProperty('--px', ((x / r.width - 0.5) * 2).toFixed(3));
+      shapes.style.setProperty('--py', ((y / r.height - 0.5) * 2).toFixed(3));
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(applyMouse); } };
+    card.addEventListener('pointermove', (e) => { mouse = { x: e.clientX, y: e.clientY }; queue(); }, { passive: true });
+    card.addEventListener('pointerleave', () => { mouse = null; queue(); });
 
     // Магнитные кнопки + конфетти по клику
     card.querySelectorAll('.magnetic').forEach((btn) => {
