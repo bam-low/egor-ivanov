@@ -104,8 +104,9 @@
     let particles = [];
     let running = false;
 
+    let dpr = 1;
     const sizeFx = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       fx.width = card.clientWidth * dpr;
       fx.height = card.clientHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -129,10 +130,10 @@
           vr: (Math.random() - 0.5) * 0.4,
           shape: Math.random() < 0.3 ? 'circle' : Math.random() < 0.5 ? 'star' : 'rect',
           life: 1,
-          decay: 0.006 + Math.random() * 0.008,
+          decay: 0.4 + Math.random() * 0.5, // доля жизни в секунду: частица живёт 1.1–2.5 с
         });
       }
-      if (!running) { running = true; requestAnimationFrame(tick); }
+      if (!running) { running = true; fx.hidden = false; last = performance.now(); requestAnimationFrame(tick); }
     };
 
     const drawStar = (r) => {
@@ -146,28 +147,34 @@
       ctx.fill();
     };
 
-    const tick = () => {
+    // физика по реальному времени, а не по кадрам: на слабом устройстве конфетти
+    // не «зависает» дольше, а просто рисуется реже
+    let last = 0;
+    const tick = (now) => {
+      const k = Math.min((now - last) / 16.67, 4); // 1 = один кадр при 60 fps
+      last = now;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, fx.width, fx.height);
       particles = particles.filter((p) => p.life > 0);
       for (const p of particles) {
-        p.vx *= 0.985;
-        p.vy = p.vy * 0.985 + 0.22;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.life -= p.decay;
-        ctx.save();
+        const drag = Math.pow(0.985, k);
+        p.vx *= drag;
+        p.vy = p.vy * drag + 0.22 * k;
+        p.x += p.vx * k;
+        p.y += p.vy * k;
+        p.rot += p.vr * k;
+        p.life -= p.decay * k / 60;
+        const cos = Math.cos(p.rot), sin = Math.sin(p.rot);
+        ctx.setTransform(dpr * cos, dpr * sin, -dpr * sin, dpr * cos, dpr * p.x, dpr * p.y);
         ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.5));
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
         ctx.fillStyle = p.color;
         if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill(); }
         else if (p.shape === 'star') drawStar(p.size * 0.8);
         else ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-        ctx.restore();
       }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       if (particles.length) requestAnimationFrame(tick);
-      else running = false;
+      else { running = false; fx.hidden = true; } // пустой холст не держим отдельным слоем
     };
 
     const go = () => {
@@ -175,10 +182,10 @@
       // два залпа из нижних углов и один из центра, когда карточка раскрылась
       setTimeout(() => {
         const w = card.clientWidth, h = card.clientHeight;
-        burst(w * 0.12, h * 0.9, 90, 1.1);
-        burst(w * 0.88, h * 0.9, 90, 1.1);
+        burst(w * 0.12, h * 0.9, 60, 1.1);
+        burst(w * 0.88, h * 0.9, 60, 1.1);
       }, 700);
-      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 140, 1.2), 1500);
+      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 90, 1.2), 1500);
     };
 
     if (reduceMotion || !('IntersectionObserver' in window)) {
@@ -229,6 +236,14 @@
         burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 60, 0.8);
       });
     });
+  }
+
+  // Бесконечные анимации блоков вне экрана ставим на паузу — видеокарта не тратит на них кадры
+  if ('IntersectionObserver' in window) {
+    const pauser = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
+    }, { rootMargin: '100px 0px' });
+    document.querySelectorAll('.hero, .marquee, .contact__card').forEach((el) => pauser.observe(el));
   }
 
   document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });

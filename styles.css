@@ -118,7 +118,6 @@ em { font-style: normal; color: var(--lime); }
   pointer-events: none;
   opacity: 0;
   transition: opacity .3s;
-  will-change: transform;
 }
 .cursor::after {
   content: ""; position: absolute; inset: 0; border-radius: 50%;
@@ -177,7 +176,6 @@ em { font-style: normal; color: var(--lime); }
   background:
     radial-gradient(closest-side, rgba(124, 92, 255, .45), transparent 70%),
     radial-gradient(closest-side at 70% 70%, rgba(255, 79, 216, .25), transparent 70%);
-  filter: blur(40px);
 }
 .hero__eyebrow {
   display: inline-flex; align-items: center; gap: 10px;
@@ -223,7 +221,6 @@ em { font-style: normal; color: var(--lime); }
      хвост запятой выходит за него — даём запас и компенсируем отрицательным отступом */
   padding: 0 .06em .2em;
   margin: 0 -.06em -.2em;
-  will-change: transform, opacity;
 }
 .is-loaded .hero__line .ch { transform: none; opacity: 1; }
 
@@ -254,14 +251,12 @@ em { font-style: normal; color: var(--lime); }
 }
 .hero__avatar::before {
   top: 8%; width: 70%; aspect-ratio: 1;
-  background: radial-gradient(closest-side, rgba(124, 92, 255, .75), rgba(124, 92, 255, .25) 55%, transparent);
-  filter: blur(30px);
+  background: radial-gradient(closest-side, rgba(124, 92, 255, .6), rgba(124, 92, 255, .22) 50%, rgba(124, 92, 255, .06) 75%, transparent);
   animation: glowPulse 5s ease-in-out infinite;
 }
 .hero__avatar::after {
   top: 2%; width: 34%; aspect-ratio: 1;
-  background: radial-gradient(closest-side, rgba(255, 79, 216, .45), transparent);
-  filter: blur(24px);
+  background: radial-gradient(closest-side, rgba(255, 79, 216, .38), rgba(255, 79, 216, .1) 60%, transparent);
   animation: glowPulse 5s ease-in-out -2.5s infinite;
 }
 @keyframes glowPulse {
@@ -272,12 +267,8 @@ em { font-style: normal; color: var(--lime); }
   height: 100%; width: auto; max-width: 100%;
   object-fit: contain; object-position: bottom center;
   transform-origin: 50% 85%;
-  will-change: transform;
-  /* фиолетовый контровой свет по силуэту + мягкая тень */
-  filter:
-    drop-shadow(0 0 1px rgba(190, 170, 255, .9))
-    drop-shadow(0 0 18px rgba(124, 92, 255, .65))
-    drop-shadow(0 40px 60px rgba(40, 20, 120, .55));
+  /* фиолетовый контур, свечение и тень запечены в саму картинку:
+     CSS drop-shadow на движущемся изображении пересчитывался каждый кадр */
   opacity: 0;
   animation: avatarIn 1.2s var(--ease) .35s forwards;
 }
@@ -297,7 +288,7 @@ em { font-style: normal; color: var(--lime); }
 .orbit--2 { width: 104%; aspect-ratio: 1; border-style: dashed; opacity: .6; animation: spin 60s linear infinite; }
 @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-.chip--float { position: absolute; animation: float 6s ease-in-out infinite; will-change: transform; }
+.chip--float { position: absolute; animation: float 6s ease-in-out infinite; }
 .chip--a { left: 2%; top: 30%; }
 .chip--b { right: 0; top: 18%; animation-delay: -2s; }
 .chip--c { right: 12%; bottom: 16%; animation-delay: -4s; }
@@ -531,23 +522,30 @@ em { font-style: normal; color: var(--lime); }
   opacity: 0;
   transform: translateY(80px) scale(.86);
   transition: transform 1.3s var(--ease), opacity .9s var(--ease);
-  will-change: transform, opacity;
 }
 .contact__card.is-live { opacity: 1; transform: none; }
 
 /* фон: цветные пятна, сетка-пол, прожектор за курсором */
 .contact__bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
-.blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0; transition: opacity 1.6s var(--ease) .3s; will-change: transform; }
-.is-live .blob { opacity: 1; }
-.blob--1 { width: 55%; aspect-ratio: 1; left: -10%; top: -20%; background: rgba(124, 92, 255, .7); animation: blob1 14s ease-in-out infinite; }
-.blob--2 { width: 45%; aspect-ratio: 1; right: -12%; top: 10%; background: rgba(255, 79, 216, .45); animation: blob2 17s ease-in-out infinite; }
-.blob--3 { width: 35%; aspect-ratio: 1; left: 30%; bottom: -40%; background: rgba(212, 255, 63, .16); animation: blob3 12s ease-in-out infinite; }
-@keyframes blob1 { 50% { transform: translate(30%, 25%) scale(1.15); } }
-@keyframes blob2 { 50% { transform: translate(-35%, 30%) scale(.9); } }
-@keyframes blob3 { 50% { transform: translate(-40%, -30%) scale(1.2); } }
+.contact__aurora {
+  position: absolute; inset: -25%;
+  background:
+    radial-gradient(38% 38% at 28% 26%, rgba(124, 92, 255, .75), rgba(124, 92, 255, .28) 45%, transparent 72%),
+    radial-gradient(32% 32% at 78% 38%, rgba(255, 79, 216, .5), rgba(255, 79, 216, .16) 45%, transparent 72%),
+    radial-gradient(26% 26% at 52% 88%, rgba(212, 255, 63, .18), transparent 72%);
+  opacity: 0;
+  transition: opacity 1.6s var(--ease) .3s;
+  animation: aurora 16s ease-in-out infinite alternate;
+}
+.is-live .contact__aurora { opacity: 1; }
+@keyframes aurora {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(6%, 4%, 0) rotate(8deg) scale(1.08); }
+  100% { transform: translate3d(-5%, 2%, 0) rotate(-6deg) scale(1.04); }
+}
 
 .contact__floor {
-  position: absolute; left: -50%; right: -50%; bottom: -10%; height: 60%;
+  position: absolute; left: -20%; right: -20%; bottom: -10%; height: 58%;
   overflow: hidden;
   transform: perspective(500px) rotateX(62deg);
   transform-origin: 50% 0%;
@@ -562,7 +560,6 @@ em { font-style: normal; color: var(--lime); }
     linear-gradient(90deg, rgba(160, 140, 255, .35) 1px, transparent 1px);
   background-size: 64px 64px;
   animation: floor 3s linear infinite;
-  will-change: transform;
 }
 .is-live .contact__floor { opacity: .55; }
 @keyframes floor { from { transform: translateY(0); } to { transform: translateY(64px); } }
@@ -574,7 +571,6 @@ em { font-style: normal; color: var(--lime); }
   background: radial-gradient(closest-side, rgba(212, 255, 63, .12), transparent);
   transform: translate3d(50vw, 50%, 0);
   opacity: 0; transition: opacity .5s;
-  will-change: transform;
 }
 .contact__card:hover .contact__spot { opacity: 1; }
 .contact__fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
@@ -586,7 +582,6 @@ em { font-style: normal; color: var(--lime); }
   translate: calc(var(--px) * var(--d) * 26px) calc(var(--py) * var(--d) * 26px);
   transition: translate .6s var(--ease), scale .9s cubic-bezier(.34, 1.8, .5, 1), opacity .5s;
   scale: 0; opacity: 0;
-  will-change: transform;
 }
 .is-live .shape { scale: 1; opacity: 1; }
 .is-live .shape:nth-child(1) { transition-delay: 0s, .7s, .7s; }
@@ -695,6 +690,9 @@ em { font-style: normal; color: var(--lime); }
   color: var(--muted); font-size: 14px;
 }
 .footer a:hover { color: var(--text); }
+
+/* анимации блоков, которых нет на экране, стоят на паузе */
+.is-offscreen, .is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
 
 /* ============ REVEAL ============ */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
