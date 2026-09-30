@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" as="image" href="assets/avatar.webp" />
 
   <script type="importmap">
     {
@@ -52,9 +53,9 @@
         <span class="hero__line" data-split>я&nbsp;Егор</span>
       </h1>
 
-      <!-- 3D-персонаж. Чтобы поставить свою картинку вместо 3D:
-           положите файл в assets/ и укажите data-avatar="assets/avatar.png" -->
-      <div class="hero__stage" data-avatar="">
+      <!-- Аватар. data-avatar="assets/avatar.png" — картинка с 3D-наклоном,
+           data-avatar="assets/avatar.glb" — 3D-модель, пусто — временная заглушка -->
+      <div class="hero__stage" data-avatar="assets/avatar.webp">
         <div class="orbit orbit--1" aria-hidden="true"></div>
         <div class="orbit orbit--2" aria-hidden="true"></div>
         <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
@@ -62,6 +63,8 @@
         <span class="chip chip--float chip--a"><i class="ico ico--tilda">T</i>Tilda</span>
         <span class="chip chip--float chip--b"><i class="ico ico--figma"></i>Figma</span>
         <span class="chip chip--float chip--c"><i class="ico ico--code">&lt;/&gt;</i>Zero Block</span>
+        <span class="chip chip--float chip--d"><i class="ico ico--react"><svg viewBox="-11 -10 22 20" fill="none" stroke="currentColor" stroke-width="1"><circle r="2" fill="currentColor" stroke="none"/><ellipse rx="10" ry="4"/><ellipse rx="10" ry="4" transform="rotate(60)"/><ellipse rx="10" ry="4" transform="rotate(120)"/></svg></i>React</span>
+        <span class="chip chip--float chip--e"><i class="ico ico--js">JS</i>JavaScript</span>
       </div>
 
       <div class="hero__bottom">
@@ -111,7 +114,9 @@
             <li><i class="ico ico--code">Z</i>Zero Block</li>
             <li><i class="ico ico--figma"></i>Figma</li>
             <li><i class="ico ico--ps">Ps</i>Photoshop</li>
-            <li><i class="ico ico--code">&lt;/&gt;</i>HTML / CSS / JS</li>
+            <li><i class="ico ico--code">&lt;/&gt;</i>HTML / CSS</li>
+            <li><i class="ico ico--js">JS</i>JavaScript</li>
+            <li><i class="ico ico--react"><svg viewBox="-11 -10 22 20" fill="none" stroke="currentColor" stroke-width="1"><circle r="2" fill="currentColor" stroke="none"/><ellipse rx="10" ry="4"/><ellipse rx="10" ry="4" transform="rotate(60)"/><ellipse rx="10" ry="4" transform="rotate(120)"/></svg></i>React</li>
             <li><i class="ico ico--ai">✦</i>Нейросети</li>
           </ul>
         </article>

@@ -1,21 +1,58 @@
-// 3D-персонаж в стиле «toy / Pixar» на Three.js.
-// Следит за курсором, моргает и плавно покачивается.
-// Чтобы заменить на свою картинку: <div class="hero__stage" data-avatar="assets/avatar.png">
+// Аватар на первом экране. Три режима — задаются атрибутом data-avatar у .hero__stage:
+//   data-avatar="assets/avatar.png"  — картинка (PNG/WebP без фона) с 3D-наклоном за курсором;
+//   data-avatar="assets/avatar.glb"  — 3D-модель (GLB), поворачивается к курсору;
+//   data-avatar=""                   — временный процедурный персонаж-заглушка.
 
 const stage = document.querySelector('.hero__stage');
 const canvas = stage?.querySelector('.hero__canvas');
 
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Общий трекинг курсора: -1..1 относительно центра сцены
+const pointer = { x: 0, y: 0, active: false };
+window.addEventListener('pointermove', (e) => {
+  if (!stage) return;
+  const rect = stage.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height * 0.4;
+  pointer.x = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.5)));
+  pointer.y = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.5)));
+  pointer.active = true;
+}, { passive: true });
+
 function useImage(src) {
+  const wrap = document.createElement('div');
+  wrap.className = 'hero__avatar';
   const img = document.createElement('img');
   img.className = 'hero__avatar-img';
   img.src = src;
   img.alt = 'Егор';
-  canvas.replaceWith(img);
+  img.decoding = 'async';
+  wrap.appendChild(img);
+  canvas.replaceWith(wrap);
+  if (reduceMotion) return;
+
+  const smooth = { x: 0, y: 0 };
+  const start = performance.now();
+  const loop = (now) => {
+    const t = (now - start) / 1000;
+    const tx = pointer.active ? pointer.x : Math.sin(t * 0.6) * 0.3;
+    const ty = pointer.active ? pointer.y : Math.sin(t * 0.8) * 0.15;
+    smooth.x += (tx - smooth.x) * 0.08;
+    smooth.y += (ty - smooth.y) * 0.08;
+    const lift = Math.sin(t * 1.3) * 8;
+    img.style.transform =
+      `translate3d(${smooth.x * 10}px, ${lift}px, 0) rotateY(${smooth.x * 12}deg) rotateX(${-smooth.y * 8}deg)`;
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
 }
 
 async function init() {
   if (!stage || !canvas) return;
-  if (stage.dataset.avatar) return useImage(stage.dataset.avatar);
+  const src = stage.dataset.avatar;
+  const isModel = /\.(glb|gltf)(\?|$)/i.test(src || '');
+  if (src && !isModel) return useImage(src);
 
   let THREE, RoomEnvironment;
   try {
@@ -25,8 +62,6 @@ async function init() {
     canvas.remove();
     return;
   }
-
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let renderer;
   try {
@@ -45,9 +80,7 @@ async function init() {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environmentIntensity = 0.55;
 
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(0, 0.2, 7);
-  camera.lookAt(0, -0.25, 0);
+  const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 200);
 
   // ---------- Свет ----------
   const key = new THREE.DirectionalLight(0xfff1e2, 2.4);
@@ -91,9 +124,37 @@ async function init() {
   // ---------- Персонаж ----------
   const character = new THREE.Group();
   scene.add(character);
+  // pivot — то, что поворачивается к курсору (голова у заглушки, вся модель у GLB)
+  let pivot = null;
+  const eyes = [];
+  const brows = [];
+  let body = null;
+
+  if (isModel) {
+    try {
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      const gltf = await new GLTFLoader().loadAsync(src);
+      const model = gltf.scene;
+      // центрируем модель: низ на 0, по центру X/Z
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.sub(new THREE.Vector3(center.x, box.min.y, center.z));
+      pivot = new THREE.Group();
+      pivot.add(model);
+      character.add(pivot);
+    } catch (e) {
+      console.warn('Не удалось загрузить 3D-модель аватара', e);
+    }
+  }
+
+  if (!pivot) {
+    buildPlaceholder();
+  }
+
+  function buildPlaceholder() {
 
   // Тело — худи
-  const body = new THREE.Group();
+  body = new THREE.Group();
   character.add(body);
   body.add(mesh(sphere(1.25, 64), M.hoodie, [0, -2.05, -0.05], [1.35, 0.95, 0.82]));
   // капюшон за шеей
@@ -126,6 +187,7 @@ async function init() {
   const head = new THREE.Group();
   head.position.set(0, 0.55, 0);
   character.add(head);
+  pivot = head;
 
   const skull = new THREE.Group();
   skull.add(mesh(sphere(1, 72), M.skin, [0, 0.06, 0], [0.97, 1.06, 0.94]));
@@ -146,11 +208,10 @@ async function init() {
   const mouth = mesh(new THREE.TorusGeometry(0.17, 0.035, 12, 32, Math.PI * 0.85), M.mouth, [0.05, -0.43, 0.85], null, [0.15, 0, Math.PI + 0.3]);
   head.add(mouth);
 
-  // глаза
-  const eyes = [];
+  // глаза (слегка выступают из головы, чтобы не «проваливаться» при поворотах)
   [-1, 1].forEach((s) => {
     const eye = new THREE.Group();
-    eye.position.set(s * 0.33, 0.08, 0.7);
+    eye.position.set(s * 0.33, 0.08, 0.76);
     eye.add(mesh(sphere(0.23, 40), M.white, [0, 0, 0], [1, 1.12, 0.8]));
     const look = new THREE.Group(); // вращается — зрачок «ездит» по яблоку
     look.add(mesh(sphere(0.13, 32), M.iris, [0, 0, 0.16], [1, 1.05, 0.4]));
@@ -163,7 +224,6 @@ async function init() {
   });
 
   // брови
-  const brows = [];
   [-1, 1].forEach((s) => {
     const b = mesh(new THREE.CapsuleGeometry(0.055, 0.26, 8, 16), M.hair, [s * 0.34, 0.42, 0.86], null, [0, s * -0.35, Math.PI / 2 + s * -0.18]);
     head.add(b);
@@ -187,29 +247,38 @@ async function init() {
     [-0.6, 0.72, 0.42, 0.26, 0.2, 0.28, -0.4, 0.8],
   ];
   blobs.forEach(([x, y, z, sx, sy, sz, rx, rz]) => hair.add(mesh(sphere(1, 48), M.hair, [x, y, z], [sx, sy, sz], [rx, 0, rz])));
+  }
 
   // ---------- Композиция и адаптив ----------
-  character.position.y = 0;
+  // Камера подбирается по габаритам персонажа, чтобы он никогда не обрезался
+  character.updateMatrixWorld(true);
+  const bounds = new THREE.Box3().setFromObject(character);
+  // у заглушки в кадр берём голову и плечи, низ худи уходит под маску
+  if (!isModel) bounds.min.y = Math.max(bounds.min.y, -1.9);
+  const size = bounds.getSize(new THREE.Vector3());
+  const mid = bounds.getCenter(new THREE.Vector3());
+  const PAD = 1.18; // запас на повороты головы и покачивание
+
   const resize = () => {
     const { clientWidth: w, clientHeight: h } = stage;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    const tan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const distH = (size.y * PAD) / 2 / tan;
+    const distW = (size.x * PAD) / 2 / (tan * camera.aspect);
+    const dist = Math.max(distH, distW) + size.z / 2;
+    camera.position.set(mid.x, mid.y, mid.z + dist);
+    camera.lookAt(mid);
+    camera.near = dist / 50;
+    camera.far = dist * 4;
     camera.updateProjectionMatrix();
   };
   new ResizeObserver(resize).observe(stage);
   resize();
 
   // ---------- Взаимодействие ----------
-  const pointer = { x: 0, y: 0 };
   const smooth = { x: 0, y: 0 };
-  window.addEventListener('pointermove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height * 0.35;
-    pointer.x = THREE.MathUtils.clamp((e.clientX - cx) / (window.innerWidth * 0.5), -1, 1);
-    pointer.y = THREE.MathUtils.clamp((e.clientY - cy) / (window.innerHeight * 0.5), -1, 1);
-  }, { passive: true });
 
   // Моргание
   let nextBlink = 1.5;
@@ -232,18 +301,18 @@ async function init() {
     // idle-движение, когда мышь не двигается (и на мобильных)
     const idleX = Math.sin(t * 0.6) * 0.25;
     const idleY = Math.sin(t * 0.9) * 0.1;
-    const targetX = pointer.x || idleX;
-    const targetY = pointer.y || idleY;
+    const targetX = pointer.active ? pointer.x : idleX;
+    const targetY = pointer.active ? pointer.y : idleY;
     smooth.x += (targetX - smooth.x) * Math.min(1, dt * 4);
     smooth.y += (targetY - smooth.y) * Math.min(1, dt * 4);
 
-    head.rotation.y = smooth.x * 0.55;
-    head.rotation.x = smooth.y * 0.3;
-    head.rotation.z = -smooth.x * 0.06;
-    body.rotation.y = smooth.x * 0.18;
+    pivot.rotation.y = smooth.x * (isModel ? 0.45 : 0.5);
+    pivot.rotation.x = smooth.y * (isModel ? 0.12 : 0.25);
+    pivot.rotation.z = -smooth.x * 0.05;
+    if (body) body.rotation.y = smooth.x * 0.18;
     eyes.forEach(({ look }) => {
-      look.rotation.y = smooth.x * 0.45;
-      look.rotation.x = smooth.y * 0.35;
+      look.rotation.y = smooth.x * 0.3;
+      look.rotation.x = smooth.y * 0.22;
     });
     brows.forEach((b) => { b.position.y = 0.42 + Math.max(0, -smooth.y) * 0.05; });
 
@@ -260,12 +329,12 @@ async function init() {
     }
 
     // покачивание и появление
-    character.position.y = reduceMotion ? 0 : Math.sin(t * 1.3) * 0.06;
+    character.position.y = reduceMotion ? 0 : Math.sin(t * 1.3) * size.y * 0.012;
     if (intro < 1) {
       intro = Math.min(1, intro + dt / 1.1);
       const s = 0.6 + 0.4 * easeOutBack(intro);
       character.scale.setScalar(s);
-      character.position.y -= (1 - intro) * 1.2;
+      character.position.y -= (1 - intro) * size.y * 0.25;
     }
 
     renderer.render(scene, camera);
