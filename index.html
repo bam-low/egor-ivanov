@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Егор Иванов — веб-дизайнер</title>
+  <meta name="description" content="Егор Иванов — веб-дизайнер и Tilda-разработчик. Проектирую и собираю сайты, которые выглядят дорого и продают." />
+  <meta name="theme-color" content="#0a0a0d" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23d4ff3f'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='34' fill='%230a0a0d'%3Eе%3C/text%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="cursor" aria-hidden="true"></div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <a class="nav__logo" href="#top">egor<span>.</span></a>
+    <nav class="nav__links" aria-label="Основная навигация">
+      <a href="#about">Обо мне</a>
+      <a href="#services">Услуги</a>
+      <a href="#works">Работы</a>
+      <a href="#process">Процесс</a>
+    </nav>
+    <a class="btn btn--gradient nav__cta" href="#contact">Написать</a>
+    <button class="nav__burger" aria-label="Меню" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <main id="top">
+    <section class="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <p class="hero__eyebrow reveal">
+        <span class="dot"></span> Открыт для новых проектов
+      </p>
+
+      <h1 class="hero__title" aria-label="Привет, я Егор">
+        <span class="hero__line" data-split>Привет,</span>
+        <span class="hero__line" data-split>я&nbsp;Егор</span>
+      </h1>
+
+      <!-- 3D-персонаж. Чтобы поставить свою картинку вместо 3D:
+           положите файл в assets/ и укажите data-avatar="assets/avatar.png" -->
+      <div class="hero__stage" data-avatar="">
+        <div class="orbit orbit--1" aria-hidden="true"></div>
+        <div class="orbit orbit--2" aria-hidden="true"></div>
+        <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
+
+        <span class="chip chip--float chip--a"><i class="ico ico--tilda">T</i>Tilda</span>
+        <span class="chip chip--float chip--b"><i class="ico ico--figma"></i>Figma</span>
+        <span class="chip chip--float chip--c"><i class="ico ico--code">&lt;/&gt;</i>Zero Block</span>
+      </div>
+
+      <div class="hero__bottom">
+        <p class="hero__lead reveal">
+          Веб-дизайнер и&nbsp;Tilda-разработчик. Проектирую и&nbsp;собираю сайты, которые <em>выглядят дорого</em> и&nbsp;продают.
+        </p>
+
+        <div class="hero__actions reveal">
+          <a class="btn btn--lime" href="#contact">Обсудить проект <span class="arrow">↗</span></a>
+          <a class="btn btn--ghost" href="#works">Смотреть работы</a>
+        </div>
+      </div>
+
+      <a class="hero__scroll" href="#about" aria-label="Листать вниз"><span></span></a>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Лендинги</span><b>✦</b><span>Корпоративные сайты</span><b>✦</b><span>Интернет-магазины</span><b>✦</b><span>Zero Block</span><b>✦</b><span>Анимации</span><b>✦</b><span>Редизайн</span><b>✦</b>
+        <span>Лендинги</span><b>✦</b><span>Корпоративные сайты</span><b>✦</b><span>Интернет-магазины</span><b>✦</b><span>Zero Block</span><b>✦</b><span>Анимации</span><b>✦</b><span>Редизайн</span><b>✦</b>
+      </div>
+    </div>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="section about" id="about">
+      <div class="section__head reveal">
+        <span class="label">01 — Обо мне</span>
+      </div>
+      <p class="about__text reveal">
+        Делаю сайты под ключ: от&nbsp;структуры и&nbsp;дизайна до&nbsp;запуска.
+        Много работал с&nbsp;клиентами на&nbsp;<span class="hl">Kwork</span>, поэтому знаю, что&nbsp;бизнесу нужен не&nbsp;просто
+        красивый макет, а&nbsp;сайт, который <span class="hl hl--violet">приводит заявки</span> и&nbsp;сдаётся в&nbsp;срок.
+      </p>
+
+      <div class="about__grid">
+        <article class="glass card-quote reveal">
+          <span class="card-quote__mark">“</span>
+          <p>Хороший сайт — это когда клиенту не&nbsp;нужно думать, куда нажать. Всё остальное — детали, в&nbsp;которых я&nbsp;и&nbsp;живу.</p>
+          <span class="card-quote__sign">— Егор</span>
+        </article>
+
+        <article class="glass tools reveal">
+          <h3 class="tools__title">Инструменты</h3>
+          <ul class="tools__list">
+            <li><i class="ico ico--tilda">T</i>Tilda</li>
+            <li><i class="ico ico--code">Z</i>Zero Block</li>
+            <li><i class="ico ico--figma"></i>Figma</li>
+            <li><i class="ico ico--ps">Ps</i>Photoshop</li>
+            <li><i class="ico ico--code">&lt;/&gt;</i>HTML / CSS / JS</li>
+            <li><i class="ico ico--ai">✦</i>Нейросети</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ SERVICES ============ -->
+    <section class="section services" id="services">
+      <div class="section__head reveal">
+        <span class="label">02 — Услуги</span>
+        <h2 class="h2">Что я делаю</h2>
+      </div>
+
+      <div class="services__grid">
+        <article class="service reveal">
+          <span class="service__num">01</span>
+          <div class="service__icon service__icon--lime">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h5"/></svg>
+          </div>
+          <h3>Лендинги</h3>
+          <p>Продающие одностраничники под рекламу: структура, тексты-заголовки, дизайн и&nbsp;сборка.</p>
+        </article>
+
+        <article class="service reveal">
+          <span class="service__num">02</span>
+          <div class="service__icon service__icon--violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+          </div>
+          <h3>Многостраничные сайты</h3>
+          <p>Сайты компаний и&nbsp;экспертов с&nbsp;понятной навигацией, блогом и&nbsp;формами заявок.</p>
+        </article>
+
+        <article class="service reveal">
+          <span class="service__num">03</span>
+          <div class="service__icon service__icon--orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 10.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          </div>
+          <h3>Интернет-магазины</h3>
+          <p>Каталог, корзина, оплата и&nbsp;удобное управление товарами прямо в&nbsp;Tilda.</p>
+        </article>
+
+        <article class="service reveal">
+          <span class="service__num">04</span>
+          <div class="service__icon service__icon--pink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/></svg>
+          </div>
+          <h3>Редизайн и&nbsp;анимации</h3>
+          <p>Освежу устаревший сайт, добавлю аккуратные анимации в&nbsp;Zero Block без&nbsp;перегруза.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ WORKS (inactive) ============ -->
+    <section class="section works" id="works">
+      <div class="section__head section__head--row reveal">
+        <div>
+          <span class="label">03 — Работы</span>
+          <h2 class="h2">Избранные проекты</h2>
+        </div>
+        <span class="badge-inactive">Неактивно</span>
+      </div>
+
+      <div class="works__grid" aria-disabled="true">
+        <div class="work work--wide reveal">
+          <div class="work__media"><span>Скоро здесь появятся кейсы</span></div>
+          <div class="work__meta"><span>Проект 01</span><span>Лендинг</span></div>
+        </div>
+        <div class="work reveal">
+          <div class="work__media"><span>Неактивно</span></div>
+          <div class="work__meta"><span>Проект 02</span><span>Интернет-магазин</span></div>
+        </div>
+        <div class="work reveal">
+          <div class="work__media"><span>Неактивно</span></div>
+          <div class="work__meta"><span>Проект 03</span><span>Корпоративный сайт</span></div>
+        </div>
+        <div class="work work--wide reveal">
+          <div class="work__media"><span>Неактивно</span></div>
+          <div class="work__meta"><span>Проект 04</span><span>Редизайн</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROCESS ============ -->
+    <section class="section process" id="process">
+      <div class="section__head reveal">
+        <span class="label">04 — Процесс</span>
+        <h2 class="h2">Как мы работаем</h2>
+      </div>
+
+      <ol class="process__list">
+        <li class="step reveal">
+          <span class="step__num">01</span>
+          <h3>Бриф</h3>
+          <p>Разбираемся в&nbsp;задаче, аудитории и&nbsp;конкурентах. Фиксирую сроки и&nbsp;бюджет.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__num">02</span>
+          <h3>Прототип</h3>
+          <p>Собираю структуру и&nbsp;смыслы — чтобы сайт вёл посетителя к&nbsp;заявке.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__num">03</span>
+          <h3>Дизайн</h3>
+          <p>Рисую макет, согласовываем. Правки — в&nbsp;рамках договорённостей, без&nbsp;сюрпризов.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__num">04</span>
+          <h3>Запуск</h3>
+          <p>Собираю на&nbsp;Tilda, адаптирую под&nbsp;телефоны, подключаю домен, формы и&nbsp;аналитику.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section contact" id="contact">
+      <div class="contact__card reveal">
+        <div class="contact__glow" aria-hidden="true"></div>
+        <span class="label">05 — Контакты</span>
+        <h2 class="contact__title">Давайте сделаем<br /><span class="scribble">что-то крутое</span></h2>
+        <p class="contact__text">Расскажите о&nbsp;проекте — отвечу в&nbsp;течение дня и&nbsp;предложу решение.</p>
+
+        <div class="contact__links">
+          <!-- TODO: подставить реальные контакты -->
+          <a class="btn btn--lime" href="https://t.me/username" target="_blank" rel="noopener">Telegram <span class="arrow">↗</span></a>
+          <a class="btn btn--ghost" href="mailto:hello@example.com">hello@example.com</a>
+          <a class="btn btn--ghost" href="https://kwork.ru/" target="_blank" rel="noopener">Профиль на Kwork <span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span data-year></span> Егор Иванов</span>
+    <a href="#top">Наверх ↑</a>
+  </footer>
+
+  <script src="main.js" defer></script>
+  <script type="module" src="avatar.js"></script>
+</body>
+</html>
