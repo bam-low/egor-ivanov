@@ -28,20 +28,15 @@
 html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: var(--bg);
+  /* лёгкий шум для «дорогой» фактуры — прямо в фоне страницы: отдельный
+     полноэкранный слой поверх всего видеокарта накладывала каждый кадр */
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color: var(--text);
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
-}
-body::before { /* лёгкий шум для «дорогой» фактуры */
-  content: "";
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 100;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 a { color: inherit; text-decoration: none; }
 h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 700; line-height: 1.05; }
@@ -140,7 +135,8 @@ em { font-style: normal; color: var(--lime); }
   border: 1px solid transparent;
   transition: background .4s, border-color .4s;
 }
-.nav.is-scrolled { background: rgba(14, 14, 18, .6); border-color: var(--line); backdrop-filter: blur(16px); }
+/* без backdrop-filter: при прокрутке размытие пересчитывалось каждый кадр */
+.nav.is-scrolled { background: rgba(16, 15, 22, .9); border-color: var(--line); }
 .nav__logo { font-family: var(--font-display); font-weight: 900; font-size: 22px; letter-spacing: -.02em; }
 .nav__logo span { color: var(--lime); }
 .nav__links {
@@ -518,9 +514,10 @@ em { font-style: normal; color: var(--lime); }
   border: 1px solid var(--line);
   background: #0d0b16;
   text-align: center;
-  /* стартовое состояние: карточка чуть уменьшена и опущена, раскрывается на GPU */
+  /* стартовое состояние: карточка опущена и прозрачна. Без scale — масштаб
+     заставляет видеокарту заново растрировать всё содержимое на каждом кадре */
   opacity: 0;
-  transform: translateY(80px) scale(.86);
+  transform: translateY(90px);
   transition: transform 1.3s var(--ease), opacity .9s var(--ease);
 }
 .contact__card.is-live { opacity: 1; transform: none; }
@@ -573,7 +570,24 @@ em { font-style: normal; color: var(--lime); }
   opacity: 0; transition: opacity .5s;
 }
 .contact__card:hover .contact__spot { opacity: 1; }
-.contact__fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
+.contact__fx { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+/* конфетти: каждая частица — маленький элемент с CSS-анимацией transform/opacity.
+   Её крутит видеокарта в отдельном потоке, поэтому она не мешает прокрутке */
+.confetti {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--s); height: calc(var(--s) * .5);
+  margin: calc(var(--s) * -.25) 0 0 calc(var(--s) * -.5);
+  background: var(--c); border-radius: 2px;
+  opacity: 0;
+  animation: confetti var(--t) linear var(--delay, 0s) forwards;
+}
+.confetti--dot { height: var(--s); border-radius: 50%; }
+.confetti--star { background: none; width: auto; height: auto; margin: 0; color: var(--c); font-size: calc(var(--s) * 1.7); line-height: 1; }
+@keyframes confetti {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; animation-timing-function: cubic-bezier(.15, .7, .4, 1); }
+  35% { transform: translate3d(calc(var(--dx) * .55), var(--up), 0) rotate(calc(var(--r) * .4)); opacity: 1; animation-timing-function: cubic-bezier(.5, 0, .9, .6); }
+  100% { transform: translate3d(var(--dx), var(--down), 0) rotate(var(--r)); opacity: 0; }
+}
 
 /* плавающие фигуры: появляются «попом», парят и двигаются за курсором */
 .contact__shapes { --px: 0; --py: 0; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
@@ -711,7 +725,7 @@ em { font-style: normal; color: var(--lime); }
 }
 
 @media (max-width: 860px) {
-  .nav { padding: 8px 8px 8px 20px; background: rgba(14,14,18,.6); border-color: var(--line); backdrop-filter: blur(16px); }
+  .nav { padding: 8px 8px 8px 20px; background: rgba(16, 15, 22, .9); border-color: var(--line); }
   .nav__cta { display: none; }
   .nav__burger {
     display: grid; place-content: center; gap: 6px;
@@ -724,7 +738,7 @@ em { font-style: normal; color: var(--lime); }
   .nav__links {
     position: absolute; top: calc(100% + 10px); left: 0; right: 0;
     flex-direction: column; padding: 10px; border-radius: 24px;
-    background: rgba(14,14,18,.92); backdrop-filter: blur(16px);
+    background: rgba(16, 15, 22, .97);
     opacity: 0; pointer-events: none; transform: translateY(-8px);
     transition: opacity .3s, transform .3s var(--ease);
   }

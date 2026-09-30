@@ -99,82 +99,31 @@
   const card = document.querySelector('[data-contact]');
   if (card) {
     const fx = card.querySelector('.contact__fx');
-    const ctx = fx.getContext('2d');
     const colors = ['#d4ff3f', '#7c5cff', '#ff4fd8', '#ffffff', '#a996ff'];
-    let particles = [];
-    let running = false;
+    const rnd = (a, b) => a + Math.random() * (b - a);
 
-    let dpr = 1;
-    const sizeFx = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      fx.width = card.clientWidth * dpr;
-      fx.height = card.clientHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    sizeFx();
-    window.addEventListener('resize', sizeFx);
-
-    // Конфетти: x, y — точка взрыва внутри карточки
-    const burst = (x, y, count = 120, power = 1) => {
+    // Конфетти из CSS-частиц: x, y — точка взрыва внутри карточки.
+    // Траектория задаётся переменными, анимацию целиком ведёт видеокарта.
+    const burst = (x, y, count = 40, power = 1) => {
       if (reduceMotion) return;
+      const frag = document.createDocumentFragment();
       for (let n = 0; n < count; n++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = (4 + Math.random() * 9) * power;
-        particles.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 4 * power,
-          size: 4 + Math.random() * 7,
-          color: colors[(Math.random() * colors.length) | 0],
-          rot: Math.random() * Math.PI,
-          vr: (Math.random() - 0.5) * 0.4,
-          shape: Math.random() < 0.3 ? 'circle' : Math.random() < 0.5 ? 'star' : 'rect',
-          life: 1,
-          decay: 0.4 + Math.random() * 0.5, // доля жизни в секунду: частица живёт 1.1–2.5 с
-        });
+        const el = document.createElement('i');
+        const kind = Math.random();
+        el.className = 'confetti' + (kind < 0.3 ? ' confetti--dot' : kind < 0.5 ? ' confetti--star' : '');
+        if (kind >= 0.3 && kind < 0.5) el.textContent = '✦';
+        const angle = rnd(-Math.PI, 0); // веером вверх
+        const speed = rnd(120, 340) * power;
+        const up = Math.sin(angle) * speed;
+        el.style.cssText =
+          `--x:${x}px;--y:${y}px;--s:${rnd(6, 12).toFixed(1)}px;--c:${colors[(Math.random() * colors.length) | 0]};` +
+          `--dx:${(Math.cos(angle) * speed * 1.4).toFixed(0)}px;--up:${up.toFixed(0)}px;` +
+          `--down:${(up + rnd(260, 480)).toFixed(0)}px;--r:${rnd(-540, 540).toFixed(0)}deg;` +
+          `--t:${rnd(1.4, 2.4).toFixed(2)}s;--delay:${rnd(0, 0.12).toFixed(2)}s`;
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+        frag.appendChild(el);
       }
-      if (!running) { running = true; fx.hidden = false; last = performance.now(); requestAnimationFrame(tick); }
-    };
-
-    const drawStar = (r) => {
-      ctx.beginPath();
-      for (let k = 0; k < 8; k++) {
-        const rad = k % 2 ? r * 0.35 : r;
-        const a = (k * Math.PI) / 4;
-        ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
-      }
-      ctx.closePath();
-      ctx.fill();
-    };
-
-    // физика по реальному времени, а не по кадрам: на слабом устройстве конфетти
-    // не «зависает» дольше, а просто рисуется реже
-    let last = 0;
-    const tick = (now) => {
-      const k = Math.min((now - last) / 16.67, 4); // 1 = один кадр при 60 fps
-      last = now;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, fx.width, fx.height);
-      particles = particles.filter((p) => p.life > 0);
-      for (const p of particles) {
-        const drag = Math.pow(0.985, k);
-        p.vx *= drag;
-        p.vy = p.vy * drag + 0.22 * k;
-        p.x += p.vx * k;
-        p.y += p.vy * k;
-        p.rot += p.vr * k;
-        p.life -= p.decay * k / 60;
-        const cos = Math.cos(p.rot), sin = Math.sin(p.rot);
-        ctx.setTransform(dpr * cos, dpr * sin, -dpr * sin, dpr * cos, dpr * p.x, dpr * p.y);
-        ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.5));
-        ctx.fillStyle = p.color;
-        if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill(); }
-        else if (p.shape === 'star') drawStar(p.size * 0.8);
-        else ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-      }
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      if (particles.length) requestAnimationFrame(tick);
-      else { running = false; fx.hidden = true; } // пустой холст не держим отдельным слоем
+      fx.appendChild(frag);
     };
 
     const go = () => {
@@ -182,10 +131,10 @@
       // два залпа из нижних углов и один из центра, когда карточка раскрылась
       setTimeout(() => {
         const w = card.clientWidth, h = card.clientHeight;
-        burst(w * 0.12, h * 0.9, 60, 1.1);
-        burst(w * 0.88, h * 0.9, 60, 1.1);
+        burst(w * 0.12, h * 0.9, 34, 1.2);
+        burst(w * 0.88, h * 0.9, 34, 1.2);
       }, 700);
-      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 90, 1.2), 1500);
+      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 44, 1.1), 1500);
     };
 
     if (reduceMotion || !('IntersectionObserver' in window)) {
@@ -233,7 +182,7 @@
       btn.addEventListener('click', () => {
         const r = btn.getBoundingClientRect();
         const c = card.getBoundingClientRect();
-        burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 60, 0.8);
+        burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 26, 0.8);
       });
     });
   }
