@@ -95,6 +95,64 @@
     };
   }
 
+  // ============ Работы ============
+  const works = [...document.querySelectorAll('[data-work]')];
+
+  // Насколько прокручивать скриншот при наведении: высота картинки минус окно.
+  // Скорость постоянная (~320 px/с), поэтому длинные сайты листаются дольше.
+  const measureWork = (work) => {
+    const screen = work.querySelector('.work__screen');
+    const img = screen.querySelector('img');
+    if (!img.complete || !img.naturalWidth) return;
+    const shift = Math.max(0, img.offsetHeight - screen.clientHeight);
+    work.style.setProperty('--shift', shift.toFixed(0));
+    work.style.setProperty('--dur', `${Math.min(14, Math.max(3, shift / 320)).toFixed(1)}s`);
+  };
+  works.forEach((work) => {
+    const img = work.querySelector('.work__screen img');
+    if (img.complete) measureWork(work);
+    else img.addEventListener('load', () => measureWork(work), { once: true });
+  });
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver((entries) => entries.forEach((e) => measureWork(e.target.closest('[data-work]'))));
+    works.forEach((work) => ro.observe(work.querySelector('.work__screen')));
+  }
+
+  // Просмотр проекта целиком
+  const viewer = document.querySelector('.viewer');
+  if (viewer && works.length) {
+    const vImg = viewer.querySelector('.viewer__img');
+    const vBody = viewer.querySelector('.viewer__body');
+    let current = 0;
+    const show = (i) => {
+      current = (i + works.length) % works.length;
+      const work = works[current];
+      const img = work.querySelector('.work__screen img');
+      viewer.querySelector('.viewer__num').textContent = work.querySelector('.work__num').textContent;
+      viewer.querySelector('.viewer__title').textContent = work.querySelector('.work__title').textContent;
+      viewer.querySelector('.viewer__cat').textContent = work.querySelector('.work__cat').textContent;
+      vImg.src = img.currentSrc || img.src;
+      vImg.alt = img.alt;
+      vBody.scrollTop = 0;
+    };
+    const open = (i) => {
+      show(i);
+      document.documentElement.classList.add('is-locked');
+      viewer.showModal();
+    };
+    works.forEach((work, i) => work.querySelector('.work__open').addEventListener('click', () => open(i)));
+    viewer.querySelectorAll('[data-step]').forEach((btn) =>
+      btn.addEventListener('click', () => show(current + Number(btn.dataset.step))));
+    viewer.querySelector('.viewer__close').addEventListener('click', () => viewer.close());
+    viewer.addEventListener('close', () => document.documentElement.classList.remove('is-locked'));
+    // клик по затемнению вокруг окна закрывает его
+    viewer.addEventListener('click', (e) => { if (e.target === viewer) viewer.close(); });
+    viewer.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(current + 1);
+      if (e.key === 'ArrowLeft') show(current - 1);
+    });
+  }
+
   // ============ Контакты: вау-появление ============
   const card = document.querySelector('[data-contact]');
   if (card) {
