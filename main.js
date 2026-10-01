@@ -131,7 +131,7 @@
       viewer.querySelector('.viewer__num').textContent = work.querySelector('.work__num').textContent;
       viewer.querySelector('.viewer__title').textContent = work.querySelector('.work__title').textContent;
       viewer.querySelector('.viewer__cat').textContent = work.querySelector('.work__cat').textContent;
-      vImg.src = img.currentSrc || img.src;
+      vImg.src = work.dataset.full || img.currentSrc || img.src; // в просмотре — версия в полном разрешении
       vImg.alt = img.alt;
       vBody.scrollTop = 0;
     };

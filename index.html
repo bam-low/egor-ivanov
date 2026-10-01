@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
-  <link rel="preload" as="image" href="assets/avatar.webp?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="preload" as="image" href="assets/avatar.webp?v=9" />
 
   <script type="importmap">
     {
@@ -56,7 +56,7 @@
 
       <!-- Аватар. data-avatar="assets/avatar.png" — картинка с 3D-наклоном,
            data-avatar="assets/avatar.glb" — 3D-модель, пусто — временная заглушка -->
-      <div class="hero__stage" data-avatar="assets/avatar.webp?v=8">
+      <div class="hero__stage" data-avatar="assets/avatar.webp?v=9">
         <div class="orbit orbit--1" aria-hidden="true"></div>
         <div class="orbit orbit--2" aria-hidden="true"></div>
         <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
@@ -181,11 +181,11 @@
       </div>
 
       <div class="works__grid">
-        <article class="work reveal work--wide" style="--accent:#5aa3f0" data-work="0">
+        <article class="work reveal work--wide" style="--accent:#5aa3f0" data-work="0" data-full="assets/works/iceberg-full.webp?v=9">
           <div class="work__frame">
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>iceberg</span></div>
             <div class="work__screen">
-              <img src="assets/works/iceberg.webp?v=8" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
+              <img src="assets/works/iceberg.webp?v=9" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
             </div>
           </div>
           <div class="work__info">
@@ -199,11 +199,11 @@
             <button class="work__open" type="button" aria-label="Открыть проект ICEBERG целиком"><span aria-hidden="true">↗</span></button>
           </div>
         </article>
-        <article class="work reveal work--wide" style="--accent:#ff7a1a" data-work="1">
+        <article class="work reveal work--wide" style="--accent:#ff7a1a" data-work="1" data-full="assets/works/city-full.webp?v=9">
           <div class="work__frame">
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>city-fulfillment</span></div>
             <div class="work__screen">
-              <img src="assets/works/city.webp?v=8" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
+              <img src="assets/works/city.webp?v=9" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
             </div>
           </div>
           <div class="work__info">
@@ -217,11 +217,11 @@
             <button class="work__open" type="button" aria-label="Открыть проект CITY Фулфилмент целиком"><span aria-hidden="true">↗</span></button>
           </div>
         </article>
-        <article class="work reveal" style="--accent:#c9a26b" data-work="2">
+        <article class="work reveal" style="--accent:#c9a26b" data-work="2" data-full="assets/works/expertiza-full.webp?v=9">
           <div class="work__frame">
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>expertiza</span></div>
             <div class="work__screen">
-              <img src="assets/works/expertiza.webp?v=8" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
+              <img src="assets/works/expertiza.webp?v=9" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
             </div>
           </div>
           <div class="work__info">
@@ -235,15 +235,33 @@
             <button class="work__open" type="button" aria-label="Открыть проект ЕРЦСЭИ целиком"><span aria-hidden="true">↗</span></button>
           </div>
         </article>
-        <article class="work reveal" style="--accent:#2f86d6" data-work="3">
+        <article class="work reveal" style="--accent:#ff5a1f" data-work="3" data-full="assets/works/milton-full.webp?v=9">
           <div class="work__frame">
-            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>energy-business</span></div>
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>milton.ru</span></div>
             <div class="work__screen">
-              <img src="assets/works/energy.webp?v=8" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
+              <img src="assets/works/milton.webp?v=9" alt="Сайт Milton Group — промышленная компания" loading="lazy" decoding="async" />
             </div>
           </div>
           <div class="work__info">
             <span class="work__num">04</span>
+            <div class="work__text">
+              <h3 class="work__title">Milton Group</h3>
+              <p class="work__cat">Промышленная компания</p>
+              <p class="work__desc">Лаконичный корпоративный сайт: шесть направлений компании с фотографиями, блок «Компания» и контакты с картой.</p>
+              <ul class="work__tags"><li>Корпоративный сайт</li><li>Минимализм</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект Milton Group целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal" style="--accent:#2f86d6" data-work="4" data-full="assets/works/energy-full.webp?v=9">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>energy-business</span></div>
+            <div class="work__screen">
+              <img src="assets/works/energy.webp?v=9" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">05</span>
             <div class="work__text">
               <h3 class="work__title">Энергия бизнеса</h3>
               <p class="work__cat">Консалтинговая компания</p>
@@ -253,15 +271,33 @@
             <button class="work__open" type="button" aria-label="Открыть проект Энергия бизнеса целиком"><span aria-hidden="true">↗</span></button>
           </div>
         </article>
-        <article class="work reveal" style="--accent:#2bb5f0" data-work="4">
+        <article class="work reveal work--wide" style="--accent:#ff8a3d" data-work="5" data-full="assets/works/vizy-full.webp?v=9">
           <div class="work__frame">
-            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>traiv</span></div>
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>vizy.kz</span></div>
             <div class="work__screen">
-              <img src="assets/works/traiv.webp?v=8" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
+              <img src="assets/works/vizy.webp?v=9" alt="Сайт VIZY.KZ — центр визовой поддержки в Алматы" loading="lazy" decoding="async" />
             </div>
           </div>
           <div class="work__info">
-            <span class="work__num">05</span>
+            <span class="work__num">06</span>
+            <div class="work__text">
+              <h3 class="work__title">VIZY.KZ</h3>
+              <p class="work__cat">Центр визовой поддержки в Алматы</p>
+              <p class="work__desc">Многостраничный сайт визового центра: каталог виз по странам и континентам, типы виз, услуги, отзывы и ответы на вопросы.</p>
+              <ul class="work__tags"><li>Многостраничный сайт</li><li>Каталог</li><li>Tilda</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект VIZY.KZ целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal work--wide" style="--accent:#2bb5f0" data-work="6" data-full="assets/works/traiv-full.webp?v=9">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>traiv</span></div>
+            <div class="work__screen">
+              <img src="assets/works/traiv.webp?v=9" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">07</span>
             <div class="work__text">
               <h3 class="work__title">TRAIV</h3>
               <p class="work__cat">Производитель крепежа</p>
@@ -443,7 +479,7 @@
     <a href="#top">Наверх ↑</a>
   </footer>
 
-  <script src="main.js?v=8" defer></script>
-  <script type="module" src="avatar.js?v=8"></script>
+  <script src="main.js?v=9" defer></script>
+  <script type="module" src="avatar.js?v=9"></script>
 </body>
 </html>
