@@ -101,6 +101,14 @@
     return !bad.length;
   };
 
+  // успех: экран «я скоро свяжусь»; если выбран Kwork — ссылка на профиль
+  const showDone = (data) => {
+    kworkLink.hidden = data.platform !== 'kwork';
+    stepForm.hidden = true;
+    stepDone.hidden = false;
+    dialog.scrollTop = 0;
+  };
+
   const reset = () => {
     form.reset();
     contactBox.hidden = true;
@@ -127,12 +135,15 @@
       page: location.href,
     };
     const endpoint = form.dataset.endpoint;
-    if (!endpoint) {
-      showError(`Форма ещё не подключена. Напишите мне на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
-      return;
-    }
     submit.classList.add('is-sending');
     try {
+      if (!endpoint) {
+        // ДЕМО-РЕЖИМ: адрес воркера ещё не вписан — заявка никуда не отправляется,
+        // показываем только экран «спасибо». Убрать, когда подключим Cloudflare Worker.
+        await new Promise((r) => setTimeout(r, 700));
+        showDone(data);
+        return;
+      }
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 12000);
       const res = await fetch(endpoint, {
@@ -143,11 +154,7 @@
       });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      // успех: экран «я скоро свяжусь»; если выбран Kwork — ссылка на профиль
-      kworkLink.hidden = data.platform !== 'kwork';
-      stepForm.hidden = true;
-      stepDone.hidden = false;
-      dialog.scrollTop = 0;
+      showDone(data);
     } catch (err) {
       showError(`Не получилось отправить заявку. Попробуйте ещё раз или напишите мне на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
     } finally {
