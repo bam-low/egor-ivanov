@@ -18,7 +18,9 @@ window.addEventListener('pointermove', (e) => {
   pointer.x = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.5)));
   pointer.y = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.5)));
   pointer.active = true;
+  if (wakeAvatar) wakeAvatar();
 }, { passive: true });
+let wakeAvatar = null;
 
 function useImage(src) {
   const wrap = document.createElement('div');
@@ -57,6 +59,9 @@ function useImage(src) {
   const loop = (now) => {
     rafId = 0;
     if (!visible) return;
+    // облегчённый режим: без постоянного покачивания, двигаемся только за курсором
+    if (document.documentElement.classList.contains('fx-lite') &&
+        Math.abs(pointer.x - smooth.x) + Math.abs(pointer.y - smooth.y) < 0.002) return;
     const t = (now - start) / 1000;
     const tx = pointer.active ? pointer.x : Math.sin(t * 0.6) * 0.3;
     const ty = pointer.active ? pointer.y : Math.sin(t * 0.8) * 0.15;
@@ -68,6 +73,7 @@ function useImage(src) {
     rafId = requestAnimationFrame(loop);
   };
   rafId = requestAnimationFrame(loop);
+  wakeAvatar = () => { if (!rafId && visible) rafId = requestAnimationFrame(loop); };
 }
 
 async function init() {

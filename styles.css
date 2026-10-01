@@ -617,7 +617,7 @@ html.is-locked { overflow: hidden; }
 /* фон: цветные пятна, сетка-пол, прожектор за курсором */
 .contact__bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
 .contact__aurora {
-  position: absolute; inset: -25%;
+  position: absolute; inset: -12%;
   background:
     radial-gradient(38% 38% at 28% 26%, rgba(124, 92, 255, .75), rgba(124, 92, 255, .28) 45%, transparent 72%),
     radial-gradient(32% 32% at 78% 38%, rgba(255, 79, 216, .5), rgba(255, 79, 216, .16) 45%, transparent 72%),
@@ -628,9 +628,9 @@ html.is-locked { overflow: hidden; }
 }
 .is-live .contact__aurora { opacity: 1; }
 @keyframes aurora {
-  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
-  50% { transform: translate3d(6%, 4%, 0) rotate(8deg) scale(1.08); }
-  100% { transform: translate3d(-5%, 2%, 0) rotate(-6deg) scale(1.04); }
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(7%, 5%, 0); }
+  100% { transform: translate3d(-6%, 2%, 0); }
 }
 
 .contact__floor {
@@ -666,15 +666,15 @@ html.is-locked { overflow: hidden; }
 /* конфетти: каждая частица — маленький элемент с CSS-анимацией transform/opacity.
    Её крутит видеокарта в отдельном потоке, поэтому она не мешает прокрутке */
 .confetti {
-  position: absolute; left: var(--x); top: var(--y);
+  position: absolute; left: var(--x, 0); top: var(--y, 0);
   width: var(--s); height: calc(var(--s) * .5);
   margin: calc(var(--s) * -.25) 0 0 calc(var(--s) * -.5);
   background: var(--c); border-radius: 2px;
   opacity: 0;
-  animation: confetti var(--t) linear var(--delay, 0s) forwards;
 }
+.confetti.is-go { animation: confetti var(--t) linear var(--delay, 0s) forwards; }
 .confetti--dot { height: var(--s); border-radius: 50%; }
-.confetti--star { background: none; width: auto; height: auto; margin: 0; color: var(--c); font-size: calc(var(--s) * 1.7); line-height: 1; }
+.confetti--diamond { height: var(--s); border-radius: 2px; }
 @keyframes confetti {
   0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; animation-timing-function: cubic-bezier(.15, .7, .4, 1); }
   35% { transform: translate3d(calc(var(--dx) * .55), var(--up), 0) rotate(calc(var(--r) * .4)); opacity: 1; animation-timing-function: cubic-bezier(.5, 0, .9, .6); }
@@ -721,7 +721,6 @@ html.is-locked { overflow: hidden; }
   margin: 20px 0 26px;
   font-weight: 900; text-transform: uppercase;
   font-size: clamp(36px, 7vw, 108px); line-height: .98; letter-spacing: -.03em;
-  perspective: 800px;
 }
 .contact__line { display: block; }
 .contact__line--accent { position: relative; display: inline-block; color: var(--lime); margin-top: .06em; }
@@ -729,10 +728,11 @@ html.is-locked { overflow: hidden; }
 .contact__title .ch {
   display: inline-block;
   transform-origin: 50% 100%;
-  transform: translateY(80%) rotateX(-95deg);
+  /* 2D-«подскок» вместо 3D-переворота: тот же характер, но без 3D-слоёв */
+  transform: translateY(.7em) rotate(10deg) scale(.6);
   opacity: 0;
-  transition: transform 1s cubic-bezier(.34, 1.56, .64, 1), opacity .6s var(--ease);
-  transition-delay: calc(var(--i) * 40ms + .45s);
+  transition: transform .9s cubic-bezier(.34, 1.56, .64, 1), opacity .5s var(--ease);
+  transition-delay: calc(var(--i) * 38ms + .45s);
 }
 .is-live .contact__title .ch { transform: none; opacity: 1; }
 /* после появления акцентная строка «дышит» волной */
@@ -741,15 +741,19 @@ html.is-locked { overflow: hidden; }
 .contact__line--accent { text-shadow: 0 0 36px rgba(212, 255, 63, .35); }
 
 .contact__underline {
-  position: absolute; left: -2%; bottom: -.14em; width: 104%; height: .24em; overflow: visible;
+  position: absolute; left: -2%; bottom: -.32em; width: 104%; height: .5em;
+  overflow: hidden;
+  transform: translateX(-101%);
+  transition: transform 1.1s var(--ease) 1.4s;
 }
-.contact__underline path {
-  fill: none; stroke: var(--violet); stroke-width: 5; stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.1s var(--ease) 1.4s;
-  filter: drop-shadow(0 0 8px rgba(124,92,255,.8));
+.contact__underline-in {
+  display: block; height: 100%;
+  transform: translateX(101%);
+  transition: transform 1.1s var(--ease) 1.4s;
 }
-.is-live .contact__underline path { stroke-dashoffset: 0; }
+.is-live .contact__underline, .is-live .contact__underline-in { transform: none; }
+.contact__underline svg { display: block; width: 100%; height: 100%; }
+.contact__underline path { fill: none; stroke: var(--violet); stroke-width: 6; stroke-linecap: round; }
 
 .contact__text {
   color: #c9c9d2; font-size: 18px; max-width: 480px; margin: 0 auto 36px;
@@ -796,6 +800,19 @@ html.is-locked { overflow: hidden; }
   color: var(--muted); font-size: 14px;
 }
 .footer a:hover { color: var(--text); }
+
+/* облегчённый режим (слабое устройство или браузер без аппаратного ускорения):
+   статичные декорации вместо бесконечных анимаций — блоки выглядят так же, но не грузят кадры */
+.fx-lite .contact__floor::before,
+.fx-lite .contact__aurora,
+.fx-lite .contact__line--accent .ch,
+.fx-lite .shape,
+.fx-lite .contact__ticker-track,
+.fx-lite .contact__links .btn--lime::before,
+.fx-lite .orbit--2,
+.fx-lite .chip--float,
+.fx-lite .hero__avatar::before,
+.fx-lite .hero__avatar::after { animation: none !important; }
 
 /* анимации блоков, которых нет на экране, стоят на паузе */
 .is-offscreen, .is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }

@@ -1,5 +1,39 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+
+  // ============ Облегчённый режим для слабых устройств ============
+  // Если устройство не тянет 60 кадров (слабый ноутбук, браузер без аппаратного ускорения),
+  // бесконечные декоративные анимации выключаются — сайт выглядит так же, но не тормозит.
+  // ?fx=lite / ?fx=full в адресе — принудительно, для проверки.
+  const fxParam = new URLSearchParams(location.search).get('fx');
+  const isLite = () => root.classList.contains('fx-lite');
+  const setLite = () => root.classList.add('fx-lite');
+  if (fxParam === 'lite') setLite();
+  else if (fxParam !== 'full') {
+    const mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency;
+    if ((mem && mem <= 2) || (cores && cores <= 2) || (navigator.connection && navigator.connection.saveData)) setLite();
+  }
+  // Замер реальной частоты кадров: медиана интервалов между кадрами за ms миллисекунд
+  const probeFrames = (ms) => new Promise((resolve) => {
+    const t = [];
+    const start = performance.now();
+    const step = (now) => {
+      t.push(now);
+      if (now - start < ms) requestAnimationFrame(step);
+      else {
+        const d = t.slice(1).map((v, i) => v - t[i]).sort((a, b) => a - b);
+        resolve(d.length ? d[d.length >> 1] : 0);
+      }
+    };
+    requestAnimationFrame(step);
+  });
+  const checkPerf = (ms, limit) => {
+    if (fxParam || isLite() || document.hidden) return;
+    probeFrames(ms).then((median) => { if (median > limit && !document.hidden) setLite(); });
+  };
+  // первый замер — когда страница загрузилась и успокоилась (60 Гц = 16,7 мс на кадр)
+  window.addEventListener('load', () => setTimeout(() => checkPerf(1000, 20), 1500), { once: true });
 
   // Разбиваем заголовки на слова и буквы для анимации появления.
   // Нумерация букв (--i) своя для каждого заголовка.
@@ -97,7 +131,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=10';
+  const VER = '?v=11';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
@@ -231,28 +265,39 @@
     const colors = ['#d4ff3f', '#7c5cff', '#ff4fd8', '#ffffff', '#a996ff'];
     const rnd = (a, b) => a + Math.random() * (b - a);
 
-    // Конфетти из CSS-частиц: x, y — точка взрыва внутри карточки.
-    // Траектория задаётся переменными, анимацию целиком ведёт видеокарта.
-    const burst = (x, y, count = 40, power = 1) => {
-      if (reduceMotion) return;
+    // Конфетти: пул заранее созданных частиц (создаём, пока блок ещё под экраном).
+    // В момент взрыва только задаём траекторию и включаем CSS-анимацию — её ведёт видеокарта.
+    const pool = [];
+    const fillPool = () => {
+      if (pool.length || reduceMotion) return;
       const frag = document.createDocumentFragment();
-      for (let n = 0; n < count; n++) {
+      for (let n = 0; n < 72; n++) {
         const el = document.createElement('i');
-        const kind = Math.random();
-        el.className = 'confetti' + (kind < 0.3 ? ' confetti--dot' : kind < 0.5 ? ' confetti--star' : '');
-        if (kind >= 0.3 && kind < 0.5) el.textContent = '✦';
-        const angle = rnd(-Math.PI, 0); // веером вверх
-        const speed = rnd(120, 340) * power;
-        const up = Math.sin(angle) * speed;
-        el.style.cssText =
-          `--x:${x}px;--y:${y}px;--s:${rnd(6, 12).toFixed(1)}px;--c:${colors[(Math.random() * colors.length) | 0]};` +
-          `--dx:${(Math.cos(angle) * speed * 1.4).toFixed(0)}px;--up:${up.toFixed(0)}px;` +
-          `--down:${(up + rnd(260, 480)).toFixed(0)}px;--r:${rnd(-540, 540).toFixed(0)}deg;` +
-          `--t:${rnd(1.4, 2.4).toFixed(2)}s;--delay:${rnd(0, 0.12).toFixed(2)}s`;
-        el.addEventListener('animationend', () => el.remove(), { once: true });
+        const kind = n % 3;
+        el.className = 'confetti' + (kind === 1 ? ' confetti--dot' : kind === 2 ? ' confetti--diamond' : '');
+        el.style.setProperty('--c', colors[n % colors.length]);
+        el.addEventListener('animationend', () => el.classList.remove('is-go'));
+        pool.push(el);
         frag.appendChild(el);
       }
       fx.appendChild(frag);
+    };
+    const burst = (x, y, count = 24, power = 1) => {
+      if (reduceMotion) return;
+      fillPool();
+      if (isLite()) count = Math.ceil(count / 2);
+      const free = pool.filter((el) => !el.classList.contains('is-go')).slice(0, count);
+      free.forEach((el) => {
+        const angle = rnd(-Math.PI, 0); // веером вверх
+        const speed = rnd(120, 340) * power;
+        const up = Math.sin(angle) * speed;
+        el.style.cssText +=
+          `;--x:${x.toFixed(0)}px;--y:${y.toFixed(0)}px;--s:${rnd(6, 12).toFixed(1)}px;` +
+          `--dx:${(Math.cos(angle) * speed * 1.4).toFixed(0)}px;--up:${up.toFixed(0)}px;` +
+          `--down:${(up + rnd(260, 480)).toFixed(0)}px;--r:${rnd(-540, 540).toFixed(0)}deg;` +
+          `--t:${rnd(1.4, 2.4).toFixed(2)}s;--delay:${rnd(0, 0.12).toFixed(2)}s`;
+        el.classList.add('is-go');
+      });
     };
 
     const go = () => {
@@ -260,10 +305,12 @@
       // два залпа из нижних углов и один из центра, когда карточка раскрылась
       setTimeout(() => {
         const w = card.clientWidth, h = card.clientHeight;
-        burst(w * 0.12, h * 0.9, 34, 1.2);
-        burst(w * 0.88, h * 0.9, 34, 1.2);
+        burst(w * 0.12, h * 0.9, 22, 1.2);
+        burst(w * 0.88, h * 0.9, 22, 1.2);
       }, 700);
-      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 44, 1.1), 1500);
+      setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 28, 1.1), 1500);
+      // если прямо во время появления кадры проседают — переключаемся в облегчённый режим
+      setTimeout(() => checkPerf(1200, 24), 300);
     };
 
     if (reduceMotion || !('IntersectionObserver' in window)) {
@@ -273,6 +320,17 @@
         if (entry.isIntersecting) { go(); obs.disconnect(); }
       }, { threshold: 0.35 });
       obs.observe(card);
+      // частицы конфетти создаём заранее, примерно за экран до появления блока,
+      // пока браузер ничем не занят, — в момент появления остаётся только запустить анимацию
+      const arm = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        fillPool();
+        // второй замер — пока человек подлистывает к блоку: если прокрутка уже
+        // проседает, облегчённый режим включится ещё до вау-анимации
+        checkPerf(500, 22);
+        arm.disconnect();
+      }, { rootMargin: '0px 0px 900px 0px' });
+      arm.observe(card);
     }
 
     // Прожектор и параллакс фигур за курсором.
@@ -311,7 +369,7 @@
       btn.addEventListener('click', () => {
         const r = btn.getBoundingClientRect();
         const c = card.getBoundingClientRect();
-        burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 26, 0.8);
+        burst(r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top, 20, 0.8);
       });
     });
   }
