@@ -437,12 +437,9 @@ em { font-style: normal; color: var(--lime); }
 .work__screen {
   position: relative; overflow: hidden;
   aspect-ratio: 16 / 10.5;
-  /* пока обложка грузится — тёмная заглушка с лёгким переливом, а не белый прямоугольник */
-  background: linear-gradient(110deg, #17161f 30%, #1f1d2b 50%, #17161f 70%) 0 0 / 300% 100%;
-  animation: shimmer 1.6s linear infinite;
+  /* пока обложка грузится — тёмная заглушка, а не белый прямоугольник */
+  background: #1b1a24;
 }
-.work.is-tall .work__screen { animation: none; background: #fff; }
-@keyframes shimmer { to { background-position: -300% 0; } }
 .work__screen picture { display: block; }
 .work__screen img {
   display: block; width: 100%; height: auto;
