@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=7" />
-  <link rel="preload" as="image" href="assets/avatar.webp?v=7" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="preload" as="image" href="assets/avatar.webp?v=8" />
 
   <script type="importmap">
     {
@@ -56,7 +56,7 @@
 
       <!-- Аватар. data-avatar="assets/avatar.png" — картинка с 3D-наклоном,
            data-avatar="assets/avatar.glb" — 3D-модель, пусто — временная заглушка -->
-      <div class="hero__stage" data-avatar="assets/avatar.webp?v=7">
+      <div class="hero__stage" data-avatar="assets/avatar.webp?v=8">
         <div class="orbit orbit--1" aria-hidden="true"></div>
         <div class="orbit orbit--2" aria-hidden="true"></div>
         <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
@@ -170,33 +170,107 @@
       </div>
     </section>
 
-    <!-- ============ WORKS (inactive) ============ -->
+    <!-- ============ WORKS ============ -->
     <section class="section works" id="works">
       <div class="section__head section__head--row reveal">
         <div>
           <span class="label">03 — Работы</span>
           <h2 class="h2">Избранные проекты</h2>
         </div>
-        <span class="badge-inactive">Неактивно</span>
+        <span class="works__hint"><span class="works__hint--hover">Наведите, чтобы пролистать сайт · нажмите, чтобы открыть целиком</span><span class="works__hint--touch">Нажмите на проект, чтобы посмотреть сайт целиком</span></span>
       </div>
 
-      <div class="works__grid" aria-disabled="true">
-        <div class="work work--wide reveal">
-          <div class="work__media"><span>Скоро здесь появятся кейсы</span></div>
-          <div class="work__meta"><span>Проект 01</span><span>Лендинг</span></div>
-        </div>
-        <div class="work reveal">
-          <div class="work__media"><span>Неактивно</span></div>
-          <div class="work__meta"><span>Проект 02</span><span>Интернет-магазин</span></div>
-        </div>
-        <div class="work reveal">
-          <div class="work__media"><span>Неактивно</span></div>
-          <div class="work__meta"><span>Проект 03</span><span>Корпоративный сайт</span></div>
-        </div>
-        <div class="work work--wide reveal">
-          <div class="work__media"><span>Неактивно</span></div>
-          <div class="work__meta"><span>Проект 04</span><span>Редизайн</span></div>
-        </div>
+      <div class="works__grid">
+        <article class="work reveal work--wide" style="--accent:#5aa3f0" data-work="0">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>iceberg</span></div>
+            <div class="work__screen">
+              <img src="assets/works/iceberg.webp?v=8" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">01</span>
+            <div class="work__text">
+              <h3 class="work__title">ICEBERG</h3>
+              <p class="work__cat">Лендинг пресейла криптотокена</p>
+              <p class="work__desc">Яркий лендинг для пресейла токена: персонаж-айсберг, раунды пресейла с бонусами, блок токеномики и розыгрыша призов.</p>
+              <ul class="work__tags"><li>Лендинг</li><li>Иллюстрации</li><li>EN</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект ICEBERG целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal work--wide" style="--accent:#ff7a1a" data-work="1">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>city-fulfillment</span></div>
+            <div class="work__screen">
+              <img src="assets/works/city.webp?v=8" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">02</span>
+            <div class="work__text">
+              <h3 class="work__title">CITY Фулфилмент</h3>
+              <p class="work__cat">Сайт фулфилмент-оператора</p>
+              <p class="work__desc">Сайт для фулфилмента под маркетплейсы: услуги, преимущества, цифры компании и формы заявки.</p>
+              <ul class="work__tags"><li>Лендинг</li><li>Услуги</li><li>Формы заявок</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект CITY Фулфилмент целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal" style="--accent:#c9a26b" data-work="2">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>expertiza</span></div>
+            <div class="work__screen">
+              <img src="assets/works/expertiza.webp?v=8" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">03</span>
+            <div class="work__text">
+              <h3 class="work__title">ЕРЦСЭИ</h3>
+              <p class="work__cat">Центр судебных экспертиз</p>
+              <p class="work__desc">Строгий корпоративный сайт: категории экспертиз, примеры выполненных работ, отзывы клиентов и лицензии.</p>
+              <ul class="work__tags"><li>Корпоративный сайт</li><li>Tilda</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект ЕРЦСЭИ целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal" style="--accent:#2f86d6" data-work="3">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>energy-business</span></div>
+            <div class="work__screen">
+              <img src="assets/works/energy.webp?v=8" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">04</span>
+            <div class="work__text">
+              <h3 class="work__title">Энергия бизнеса</h3>
+              <p class="work__cat">Консалтинговая компания</p>
+              <p class="work__desc">Сайт консалтинга для бизнеса: миссия и ценности, интерактивный блок «Заряди свой бизнес», услуги и этапы работы.</p>
+              <ul class="work__tags"><li>Корпоративный сайт</li><li>Услуги</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект Энергия бизнеса целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+        <article class="work reveal" style="--accent:#2bb5f0" data-work="4">
+          <div class="work__frame">
+            <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>traiv</span></div>
+            <div class="work__screen">
+              <img src="assets/works/traiv.webp?v=8" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="work__info">
+            <span class="work__num">05</span>
+            <div class="work__text">
+              <h3 class="work__title">TRAIV</h3>
+              <p class="work__cat">Производитель крепежа</p>
+              <p class="work__desc">Сайт производителя крепежа на заказ: форма заявки на первом экране, преимущества, описание производства и каталог оборудования.</p>
+              <ul class="work__tags"><li>Корпоративный сайт</li><li>EN</li><li>Каталог</li></ul>
+            </div>
+            <button class="work__open" type="button" aria-label="Открыть проект TRAIV целиком"><span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -345,12 +419,31 @@
     </section>
   </main>
 
+  <!-- Просмотр проекта целиком -->
+  <dialog class="viewer" aria-labelledby="viewer-title">
+    <div class="viewer__head">
+      <div>
+        <span class="viewer__num"></span>
+        <h3 class="viewer__title" id="viewer-title"></h3>
+        <p class="viewer__cat"></p>
+      </div>
+      <div class="viewer__nav">
+        <button class="viewer__btn" type="button" data-step="-1" aria-label="Предыдущий проект">←</button>
+        <button class="viewer__btn" type="button" data-step="1" aria-label="Следующий проект">→</button>
+        <button class="viewer__btn viewer__close" type="button" aria-label="Закрыть">✕</button>
+      </div>
+    </div>
+    <div class="viewer__body">
+      <img class="viewer__img" alt="" decoding="async" />
+    </div>
+  </dialog>
+
   <footer class="footer">
     <span>© <span data-year></span> Егор Иванов</span>
     <a href="#top">Наверх ↑</a>
   </footer>
 
-  <script src="main.js?v=7" defer></script>
-  <script type="module" src="avatar.js?v=7"></script>
+  <script src="main.js?v=8" defer></script>
+  <script type="module" src="avatar.js?v=8"></script>
 </body>
 </html>
