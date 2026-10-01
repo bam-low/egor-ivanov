@@ -33,13 +33,14 @@ export default {
     // ловушка для спам-ботов: человек это поле не заполняет
     if (d.website) return new Response('ok', { headers: cors });
 
+    const name = clip(d.name, 60);
     const project = clip(d.project, 120);
     const description = clip(d.description, 2000);
     const platform = LABELS[d.platform] ? d.platform : '';
     const channel = CHANNELS[d.channel] ? d.channel : '';
     const contact = clip(d.contact, 80);
     const comment = clip(d.comment, 300);
-    if (project.length < 2 || description.length < 10 || !platform || (platform === 'other' && !contact)) {
+    if (name.length < 2 || project.length < 2 || description.length < 10 || !platform || (platform === 'other' && !contact)) {
       return new Response('Invalid form', { status: 422, headers: cors });
     }
 
@@ -50,6 +51,7 @@ export default {
     const lines = [
       '🚀 <b>Новая заявка с сайта</b>',
       '',
+      `<b>Имя:</b> ${esc(name)}`,
       `<b>Проект:</b> ${esc(project)}`,
       `<b>Описание:</b>\n${esc(description)}`,
       '',
