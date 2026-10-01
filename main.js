@@ -14,7 +14,7 @@
     const mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency;
     if ((mem && mem <= 2) || (cores && cores <= 2) || (navigator.connection && navigator.connection.saveData)) setLite();
   }
-  // Замер реальной частоты кадров: медиана интервалов между кадрами за ms миллисекунд
+  // Замер кадров за ms миллисекунд: медиана интервала и доля «рывков» (кадров заметно длиннее обычного).
   const probeFrames = (ms) => new Promise((resolve) => {
     const t = [];
     const start = performance.now();
@@ -22,18 +22,58 @@
       t.push(now);
       if (now - start < ms) requestAnimationFrame(step);
       else {
-        const d = t.slice(1).map((v, i) => v - t[i]).sort((a, b) => a - b);
-        resolve(d.length ? d[d.length >> 1] : 0);
+        const d = t.slice(1).map((v, i) => v - t[i]);
+        const sorted = d.slice().sort((a, b) => a - b);
+        const median = sorted.length ? sorted[sorted.length >> 1] : 0;
+        const jank = d.filter((x) => x > Math.max(25, median * 1.7)).length / Math.max(1, d.length);
+        resolve({ median, jank });
       }
     };
     requestAnimationFrame(step);
   });
-  const checkPerf = (ms, limit) => {
-    if (fxParam || isLite() || document.hidden) return;
-    probeFrames(ms).then((median) => { if (median > limit && !document.hidden) setLite(); });
+  // Облегчённый режим включаем только при настоящих рывках. Ровные 30 кадров (так браузер
+  // работает на батарее в режиме энергосбережения) — не повод: анимации идут плавно, просто реже.
+  root.dataset.fxReason = fxParam ? `?fx=${fxParam}` : (isLite() ? 'слабое железо' : '');
+  const checkPerf = (ms, why) => {
+    if (fxParam === 'lite' || fxParam === 'full' || isLite() || document.hidden) return;
+    probeFrames(ms).then(({ median, jank }) => {
+      if (document.hidden) return;
+      if (median > 40 || jank > 0.2) {
+        setLite();
+        root.dataset.fxReason = `${why}: ${Math.round(1000 / median)} fps, рывков ${Math.round(jank * 100)}%`;
+      }
+    });
   };
-  // первый замер — когда страница загрузилась и успокоилась (60 Гц = 16,7 мс на кадр)
-  window.addEventListener('load', () => setTimeout(() => checkPerf(1000, 20), 1500), { once: true });
+  // первый замер — когда страница загрузилась и успокоилась
+  window.addEventListener('load', () => setTimeout(() => checkPerf(1500, 'после загрузки'), 1500), { once: true });
+
+  // Отладочная панель: ?debug в адресе — частота кадров, рывки и режим анимаций
+  if (new URLSearchParams(location.search).has('debug')) {
+    const hud = document.createElement('div');
+    hud.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;padding:10px 14px;border-radius:12px;' +
+      'background:rgba(0,0,0,.82);color:#d4ff3f;font:600 12px/1.5 ui-monospace,monospace;pointer-events:none;white-space:pre';
+    document.body.appendChild(hud);
+    let frames = [];
+    let longOnes = 0;
+    let last = performance.now();
+    const tick = (now) => {
+      const d = now - last; last = now;
+      frames.push(d);
+      if (d > 50) longOnes++;
+      if (frames.length >= 30) {
+        const avg = frames.reduce((a, b) => a + b, 0) / frames.length;
+        const worst = Math.max(...frames);
+        hud.textContent =
+          `FPS ${Math.round(1000 / avg)}  худший кадр ${Math.round(worst)} мс\n` +
+          `кадров >50 мс всего: ${longOnes}\n` +
+          `режим: ${isLite() ? 'облегчённый' : 'полный'}${root.dataset.fxReason ? ' (' + root.dataset.fxReason + ')' : ''}\n` +
+          `экран ${innerWidth}×${innerHeight} @${devicePixelRatio}x`;
+        frames = [];
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 
   // Разбиваем заголовки на слова и буквы для анимации появления.
   // Нумерация букв (--i) своя для каждого заголовка.
@@ -131,7 +171,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=13';
+  const VER = '?v=14';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
@@ -309,8 +349,6 @@
         burst(w * 0.88, h * 0.9, 22, 1.2);
       }, 700);
       setTimeout(() => burst(card.clientWidth / 2, card.clientHeight * 0.42, 28, 1.1), 1500);
-      // если прямо во время появления кадры проседают — переключаемся в облегчённый режим
-      setTimeout(() => checkPerf(1200, 24), 300);
     };
 
     if (reduceMotion || !('IntersectionObserver' in window)) {
@@ -326,8 +364,8 @@
         if (!entry.isIntersecting) return;
         fillPool();
         // второй замер — пока человек подлистывает к блоку: если прокрутка уже
-        // проседает, облегчённый режим включится ещё до вау-анимации
-        checkPerf(500, 22);
+        // дёргается, облегчённый режим включится ещё до вау-анимации
+        checkPerf(800, 'при прокрутке');
         arm.disconnect();
       }, { rootMargin: '0px 0px 900px 0px' });
       arm.observe(card);

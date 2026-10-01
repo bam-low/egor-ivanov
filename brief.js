@@ -30,7 +30,7 @@
     pausePage();
     root.classList.add('is-locked');
     dialog.showModal();
-    setTimeout(() => form.elements.project.focus({ preventScroll: true }), 350);
+    setTimeout(() => form.elements.name.focus({ preventScroll: true }), 350);
   };
   const close = () => {
     if (!dialog.open || dialog.classList.contains('is-closing')) return;
@@ -77,6 +77,7 @@
   const validate = () => {
     const f = form.elements;
     const bad = [];
+    if (f.name.value.trim().length < 2) bad.push(f.name);
     if (f.project.value.trim().length < 2) bad.push(f.project);
     if (f.description.value.trim().length < 10) bad.push(f.description);
     if (!f.platform.value) bad.push(dialog.querySelector('#pf-kwork'));
@@ -89,7 +90,8 @@
     }
     bad.forEach((el) => el.closest('.glass-field').classList.add('is-invalid'));
     if (bad.length) {
-      const msg = bad[0] === f.description ? 'Опишите проект хотя бы парой предложений.'
+      const msg = bad[0] === f.name ? 'Подскажите, как к вам обращаться.'
+        : bad[0] === f.description ? 'Опишите проект хотя бы парой предложений.'
         : bad[0] === f.contact ? 'Проверьте контакт: для Telegram — @username, для телефона и WhatsApp — номер.'
         : bad[0].name === 'platform' ? 'Выберите, где удобнее работать.'
         : 'Заполните отмеченные поля.';
@@ -114,6 +116,7 @@
     if (submit.classList.contains('is-sending') || !validate()) return;
     const f = form.elements;
     const data = {
+      name: f.name.value.trim(),
       project: f.project.value.trim(),
       description: f.description.value.trim(),
       platform: f.platform.value,

@@ -616,13 +616,13 @@ html.is-locked { overflow: hidden; }
   border: 1px solid var(--line);
   background: #0d0b16;
   text-align: center;
-  /* стартовое состояние: карточка опущена и прозрачна. Без scale — масштаб
-     заставляет видеокарту заново растрировать всё содержимое на каждом кадре */
-  opacity: 0;
+  /* стартовое состояние: карточка опущена. Только сдвиг: прозрачность всей карточки
+     заставила бы видеокарту собирать её целиком со всеми слоями в отдельную текстуру,
+     а содержимое и так проявляется по частям. Без scale — он растрирует всё заново */
   transform: translateY(90px);
-  transition: transform 1.3s var(--ease), opacity .9s var(--ease);
+  transition: transform 1.3s var(--ease);
 }
-.contact__card.is-live { opacity: 1; transform: none; }
+.contact__card.is-live { transform: none; }
 
 /* фон: цветные пятна, сетка-пол, прожектор за курсором */
 .contact__bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
@@ -747,7 +747,7 @@ html.is-locked { overflow: hidden; }
 .is-live .contact__title .ch { transform: none; opacity: 1; }
 /* после появления акцентная строка «дышит» волной */
 .is-live .contact__line--accent .ch { animation: wave 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * 90ms + 2s); }
-@keyframes wave { 0%, 60%, 100% { translate: 0 0; } 30% { translate: 0 -.12em; } }
+@keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-.12em); } }
 .contact__line--accent { text-shadow: 0 0 36px rgba(212, 255, 63, .35); }
 
 .contact__underline {
@@ -817,7 +817,6 @@ html.is-locked { overflow: hidden; }
 .fx-lite .contact__aurora,
 .fx-lite .contact__line--accent .ch,
 .fx-lite .shape,
-.fx-lite .contact__ticker-track,
 .fx-lite .contact__links .btn--lime::before,
 .fx-lite .orbit--2,
 .fx-lite .chip--float,
