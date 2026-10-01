@@ -25,10 +25,23 @@ function useImage(src) {
   wrap.className = 'hero__avatar';
   const img = document.createElement('img');
   img.className = 'hero__avatar-img';
-  img.src = src;
   img.alt = 'Егор';
   img.decoding = 'async';
-  wrap.appendChild(img);
+  img.fetchPriority = 'high';
+  // если рядом лежит AVIF-версия (data-avatar-avif) — браузер возьмёт её, она легче
+  const avif = stage.dataset.avatarAvif;
+  if (avif) {
+    const picture = document.createElement('picture');
+    const source = document.createElement('source');
+    source.type = 'image/avif';
+    source.srcset = avif;
+    picture.append(source, img);
+    img.src = src;
+    wrap.appendChild(picture);
+  } else {
+    img.src = src;
+    wrap.appendChild(img);
+  }
   canvas.replaceWith(wrap);
   if (reduceMotion) return;
 

@@ -97,25 +97,82 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
+  const VER = '?v=10';
+
+  // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
+  // в нём же грузим длинный скриншот и полную версию
+  const fmtOf = (work) => (work.querySelector('.work__screen img').currentSrc.includes('.avif') ? 'avif' : 'webp');
+  const urlOf = (work, kind) => `${work.dataset.img}${kind === 'full' ? '-full' : ''}.${fmtOf(work)}${VER}`;
+
+  // Кэш загрузок: каждая картинка качается и декодируется один раз
+  const loads = new Map();
+  const preload = (url) => {
+    if (!loads.has(url)) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = url;
+      loads.set(url, img.decode().then(() => img).catch(() => img));
+    }
+    return loads.get(url);
+  };
 
   // Насколько прокручивать скриншот при наведении: высота картинки минус окно.
   // Скорость постоянная (~320 px/с), поэтому длинные сайты листаются дольше.
   const measureWork = (work) => {
+    if (!work.classList.contains('is-tall')) return;
     const screen = work.querySelector('.work__screen');
     const img = screen.querySelector('img');
-    if (!img.complete || !img.naturalWidth) return;
     const shift = Math.max(0, img.offsetHeight - screen.clientHeight);
     work.style.setProperty('--shift', shift.toFixed(0));
     work.style.setProperty('--dur', `${Math.min(14, Math.max(3, shift / 320)).toFixed(1)}s`);
   };
-  works.forEach((work) => {
+
+  // Сначала в карточке лёгкая обложка (только верх сайта). Длинный скриншот качаем,
+  // когда карточка подъезжает к экрану или на неё навели, и незаметно подменяем:
+  // обложка — точная копия его верхней части.
+  const upgradeWork = (work) => {
+    if (work.dataset.upgrading) return;
+    work.dataset.upgrading = '1';
     const img = work.querySelector('.work__screen img');
-    if (img.complete) measureWork(work);
-    else img.addEventListener('load', () => measureWork(work), { once: true });
+    const source = work.querySelector('.work__screen source');
+    const ready = () => {
+      const url = urlOf(work, 'tall');
+      preload(url).then(() => {
+        // мерить можно только когда браузер подставил новую картинку — по событию load
+        img.addEventListener('load', () => {
+          work.classList.add('is-tall');
+          measureWork(work);
+        }, { once: true });
+        img.height = Number(work.dataset.tallH);
+        if (source) source.srcset = `${work.dataset.img}.avif${VER}`;
+        img.src = `${work.dataset.img}.webp${VER}`;
+      });
+    };
+    if (img.complete && img.currentSrc) ready();
+    else img.addEventListener('load', ready, { once: true });
+  };
+
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { upgradeWork(e.target); near.unobserve(e.target); }
+    }), { rootMargin: '500px 0px' });
+    works.forEach((work) => near.observe(work));
+  } else works.forEach(upgradeWork);
+
+  works.forEach((work) => {
+    // наведение = намерение: сразу тянем и длинный скриншот, и полную версию для просмотра
+    const intent = () => {
+      upgradeWork(work);
+      const img = work.querySelector('.work__screen img');
+      if (img.currentSrc) preload(urlOf(work, 'full'));
+    };
+    work.addEventListener('pointerenter', intent);
+    work.addEventListener('focusin', intent);
   });
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver((entries) => entries.forEach((e) => measureWork(e.target.closest('[data-work]'))));
     works.forEach((work) => ro.observe(work.querySelector('.work__screen')));
+    works.forEach((work) => ro.observe(work.querySelector('.work__screen img')));
   }
 
   // Просмотр проекта целиком
@@ -124,16 +181,30 @@
     const vImg = viewer.querySelector('.viewer__img');
     const vBody = viewer.querySelector('.viewer__body');
     let current = 0;
+    let token = 0;
     const show = (i) => {
       current = (i + works.length) % works.length;
       const work = works[current];
-      const img = work.querySelector('.work__screen img');
+      const cardImg = work.querySelector('.work__screen img');
+      const myToken = ++token;
       viewer.querySelector('.viewer__num').textContent = work.querySelector('.work__num').textContent;
       viewer.querySelector('.viewer__title').textContent = work.querySelector('.work__title').textContent;
       viewer.querySelector('.viewer__cat').textContent = work.querySelector('.work__cat').textContent;
-      vImg.src = work.dataset.full || img.currentSrc || img.src; // в просмотре — версия в полном разрешении
-      vImg.alt = img.alt;
+      vImg.alt = cardImg.alt;
       vBody.scrollTop = 0;
+      // мгновенно — то, что уже загружено для этой карточки (никаких картинок чужого проекта),
+      // затем подменяем на полное разрешение, когда оно скачается и декодируется
+      const [fw, fh] = work.dataset.fullSize.split('x').map(Number);
+      vImg.width = fw; vImg.height = fh;
+      vImg.src = cardImg.currentSrc || cardImg.src;
+      viewer.classList.add('is-loading');
+      preload(urlOf(work, 'full')).then((full) => {
+        if (myToken !== token) return; // пока качалось, открыли другой проект
+        vImg.src = full.src;
+        viewer.classList.remove('is-loading');
+      });
+      // соседние проекты подгружаем заранее — листание стрелками без ожидания
+      preload(urlOf(works[(current + 1) % works.length], 'full'));
     };
     const open = (i) => {
       show(i);

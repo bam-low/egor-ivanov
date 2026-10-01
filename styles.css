@@ -258,6 +258,7 @@ em { font-style: normal; color: var(--lime); }
 @keyframes glowPulse {
   50% { opacity: .65; transform: translateX(-50%) scale(1.08); }
 }
+.hero__avatar picture { display: contents; }
 .hero__avatar-img {
   position: relative;
   height: 100%; width: auto; max-width: 100%;
@@ -438,6 +439,7 @@ em { font-style: normal; color: var(--lime); }
   aspect-ratio: 16 / 10.5;
   background: #fff;
 }
+.work__screen picture { display: block; }
 .work__screen img {
   display: block; width: 100%; height: auto;
   /* возврат наверх — быстрый; прокрутка вниз — медленная, задаётся при наведении */
@@ -505,6 +507,15 @@ em { font-style: normal; color: var(--lime); }
 .viewer__close:hover { background: #fff; }
 .viewer__body { flex: 1; overflow-y: auto; overscroll-behavior: contain; background: #fff; }
 .viewer__img { display: block; width: 100%; max-width: 1000px; margin: 0 auto; height: auto; }
+/* полоска загрузки, пока качается полная версия (сверху показана уже загруженная превью) */
+.viewer__body { position: relative; }
+.viewer.is-loading .viewer__head { position: relative; }
+.viewer.is-loading .viewer__head::after {
+  content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 40%;
+  background: linear-gradient(90deg, transparent, var(--lime), transparent);
+  animation: viewerLoad 1s ease-in-out infinite;
+}
+@keyframes viewerLoad { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
 html.is-locked { overflow: hidden; }
 
 /* Process */
