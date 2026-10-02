@@ -169,9 +169,31 @@
     };
   }
 
+  // ============ Форматы работы: переключатели над шагами ============
+  const formatTabs = [...document.querySelectorAll('.format')];
+  const selectFormat = (tab, focus) => {
+    formatTabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.hidden = !on;
+      panel.classList.toggle('is-active', on);
+    });
+    if (focus) tab.focus();
+  };
+  formatTabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => selectFormat(tab));
+    // стрелки влево/вправо — как у обычных вкладок
+    tab.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (step) { e.preventDefault(); selectFormat(formatTabs[(i + step + formatTabs.length) % formatTabs.length], true); }
+    });
+  });
+
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=15';
+  const VER = '?v=16';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
