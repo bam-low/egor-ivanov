@@ -23,8 +23,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=17" />
-  <link rel="preload" as="image" type="image/avif" href="assets/avatar.avif?v=17" fetchpriority="high" />
+  <link rel="stylesheet" href="styles.css?v=18" />
+  <link rel="preload" as="image" type="image/avif" href="assets/avatar.avif?v=18" fetchpriority="high" />
 
   <script type="importmap">
     {
@@ -47,6 +47,7 @@
       <a href="#works">Работы</a>
       <a href="#process">Процесс</a>
       <a href="#reviews">Отзывы</a>
+      <a href="#faq">Вопросы</a>
     </nav>
     <a class="btn btn--gradient nav__cta" href="#contact">Написать</a>
     <button class="nav__burger" aria-label="Меню" aria-expanded="false"><span></span><span></span></button>
@@ -68,7 +69,7 @@
 
       <!-- Аватар. data-avatar="assets/avatar.png" — картинка с 3D-наклоном,
            data-avatar="assets/avatar.glb" — 3D-модель, пусто — временная заглушка -->
-      <div class="hero__stage" data-avatar="assets/avatar.webp?v=17" data-avatar-avif="assets/avatar.avif?v=17">
+      <div class="hero__stage" data-avatar="assets/avatar.webp?v=18" data-avatar-avif="assets/avatar.avif?v=18">
         <div class="orbit orbit--1" aria-hidden="true"></div>
         <div class="orbit orbit--2" aria-hidden="true"></div>
         <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
@@ -112,6 +113,21 @@
         Много работал с&nbsp;клиентами на&nbsp;<span class="hl">Kwork</span>, поэтому знаю, что&nbsp;бизнесу нужен не&nbsp;просто
         красивый макет, а&nbsp;сайт, который <span class="hl hl--violet">приводит заявки</span> и&nbsp;сдаётся в&nbsp;срок.
       </p>
+
+      <ul class="stats">
+        <li class="stat reveal">
+          <b class="stat__num" data-count="32">32</b>
+          <span class="stat__text">заказа выполнено</span>
+        </li>
+        <li class="stat reveal">
+          <b class="stat__num" data-count="100" data-suffix="%">100%</b>
+          <span class="stat__text">заказов успешно сдано</span>
+        </li>
+        <li class="stat stat--badge reveal">
+          <b class="stat__badge"><i aria-hidden="true">★</i>Восходящая звезда</b>
+          <span class="stat__text">статус на&nbsp;Kwork</span>
+        </li>
+      </ul>
 
       <div class="about__grid">
         <article class="glass card-quote reveal">
@@ -204,8 +220,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>iceberg</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/iceberg-poster.avif?v=17" />
-                <img src="assets/works/iceberg-poster.webp?v=17" width="900" height="591" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/iceberg-poster.avif?v=18" />
+                <img src="assets/works/iceberg-poster.webp?v=18" width="900" height="591" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -225,8 +241,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>city-fulfillment</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/city-poster.avif?v=17" />
-                <img src="assets/works/city-poster.webp?v=17" width="900" height="591" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/city-poster.avif?v=18" />
+                <img src="assets/works/city-poster.webp?v=18" width="900" height="591" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -246,8 +262,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>expertiza</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/expertiza-poster.avif?v=17" />
-                <img src="assets/works/expertiza-poster.webp?v=17" width="900" height="591" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/expertiza-poster.avif?v=18" />
+                <img src="assets/works/expertiza-poster.webp?v=18" width="900" height="591" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -267,8 +283,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>milton.ru</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/milton-poster.avif?v=17" />
-                <img src="assets/works/milton-poster.webp?v=17" width="900" height="591" alt="Сайт Milton Group — промышленная компания" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/milton-poster.avif?v=18" />
+                <img src="assets/works/milton-poster.webp?v=18" width="900" height="591" alt="Сайт Milton Group — промышленная компания" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -288,8 +304,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>energy-business</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/energy-poster.avif?v=17" />
-                <img src="assets/works/energy-poster.webp?v=17" width="900" height="591" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/energy-poster.avif?v=18" />
+                <img src="assets/works/energy-poster.webp?v=18" width="900" height="591" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -309,8 +325,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>vizy.kz</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/vizy-poster.avif?v=17" />
-                <img src="assets/works/vizy-poster.webp?v=17" width="900" height="591" alt="Сайт VIZY.KZ — центр визовой поддержки в Алматы" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/vizy-poster.avif?v=18" />
+                <img src="assets/works/vizy-poster.webp?v=18" width="900" height="591" alt="Сайт VIZY.KZ — центр визовой поддержки в Алматы" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -330,8 +346,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>traiv</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/traiv-poster.avif?v=17" />
-                <img src="assets/works/traiv-poster.webp?v=17" width="900" height="591" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/traiv-poster.avif?v=18" />
+                <img src="assets/works/traiv-poster.webp?v=18" width="900" height="591" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -357,22 +373,22 @@
       </div>
 
       <div class="formats reveal" role="tablist" aria-label="Формат работы">
-        <button class="format" type="button" role="tab" id="tab-figma" aria-controls="panel-figma" aria-selected="false" tabindex="-1" data-format="figma">
+        <button class="format" type="button" role="tab" id="tab-figma" aria-controls="panel-figma" aria-selected="true" tabindex="0" data-format="figma">
           <span class="format__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h3v6H9a3 3 0 0 1 0-6zM12 3h3a3 3 0 0 1 0 6h-3zM9 9h3v6H9a3 3 0 0 1 0-6zM12 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM9 15h3v3a3 3 0 1 1-3-3z"/></svg></span>
-          <span class="format__text"><b>По вашему макету</b><small>Дизайн уже есть в&nbsp;Figma — собираю сайт на&nbsp;Tilda</small></span>
+          <span class="format__text"><b>По вашему макету</b><small>Дизайн уже есть в&nbsp;Figma — собираю сайт на&nbsp;Tilda</small><span class="format__price">от&nbsp;8&nbsp;000&nbsp;₽</span></span>
         </button>
-        <button class="format" type="button" role="tab" id="tab-full" aria-controls="panel-full" aria-selected="true" tabindex="0" data-format="full">
+        <button class="format" type="button" role="tab" id="tab-full" aria-controls="panel-full" aria-selected="false" tabindex="-1" data-format="full">
           <span class="format__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 4.9 5.2.6-3.9 3.6 1 5.2L12 14.8 7.4 17.3l1-5.2L4.5 8.5l5.2-.6z"/></svg></span>
-          <span class="format__text"><b>Дизайн + сайт</b><small>Под ключ: от&nbsp;идеи и&nbsp;макета до&nbsp;запуска на&nbsp;Tilda</small></span>
+          <span class="format__text"><b>Дизайн + сайт</b><small>Под ключ: от&nbsp;идеи и&nbsp;макета до&nbsp;запуска на&nbsp;Tilda</small><span class="format__price">от&nbsp;15&nbsp;000&nbsp;₽</span></span>
         </button>
         <button class="format" type="button" role="tab" id="tab-code" aria-controls="panel-code" aria-selected="false" tabindex="-1" data-format="code">
           <span class="format__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg></span>
-          <span class="format__text"><b>Сайт на коде</b><small>Без конструктора: HTML, CSS, JavaScript, React</small></span>
+          <span class="format__text"><b>Сайт на коде</b><small>Без конструктора: HTML, CSS, JavaScript, React</small><span class="format__price">от&nbsp;20&nbsp;000&nbsp;₽</span></span>
         </button>
       </div>
 
       <div class="process__panels reveal">
-        <ol class="process__list" role="tabpanel" id="panel-figma" aria-labelledby="tab-figma" data-panel="figma" hidden>
+        <ol class="process__list is-active" role="tabpanel" id="panel-figma" aria-labelledby="tab-figma" data-panel="figma">
           <li class="step">
             <span class="step__num">01</span>
             <h3>Макет</h3>
@@ -393,8 +409,13 @@
             <h3>Запуск</h3>
             <p>Подключаю домен, формы и&nbsp;аналитику, передаю доступы.</p>
           </li>
+          <li class="process__deal">
+            <span class="process__price"><small>Стоимость</small><b>от&nbsp;8&nbsp;000&nbsp;₽</b></span>
+            <span class="process__promise"><i aria-hidden="true">✓</i>Работа ведётся до&nbsp;последней правки</span>
+            <button class="btn btn--lime process__cta" type="button" data-brief-open>Обсудить проект <span class="arrow">↗</span></button>
+          </li>
         </ol>
-        <ol class="process__list is-active" role="tabpanel" id="panel-full" aria-labelledby="tab-full" data-panel="full">
+        <ol class="process__list" role="tabpanel" id="panel-full" aria-labelledby="tab-full" data-panel="full" hidden>
           <li class="step">
             <span class="step__num">01</span>
             <h3>Бриф</h3>
@@ -414,6 +435,11 @@
             <span class="step__num">04</span>
             <h3>Запуск</h3>
             <p>Собираю на&nbsp;Tilda, адаптирую под&nbsp;телефоны, подключаю домен, формы и&nbsp;аналитику.</p>
+          </li>
+          <li class="process__deal">
+            <span class="process__price"><small>Стоимость</small><b>от&nbsp;15&nbsp;000&nbsp;₽</b></span>
+            <span class="process__promise"><i aria-hidden="true">✓</i>Работа ведётся до&nbsp;последней правки</span>
+            <button class="btn btn--lime process__cta" type="button" data-brief-open>Обсудить проект <span class="arrow">↗</span></button>
           </li>
         </ol>
         <ol class="process__list" role="tabpanel" id="panel-code" aria-labelledby="tab-code" data-panel="code" hidden>
@@ -436,6 +462,11 @@
             <span class="step__num">04</span>
             <h3>Запуск</h3>
             <p>Размещаю на&nbsp;хостинге, подключаю домен, передаю код и&nbsp;доступы.</p>
+          </li>
+          <li class="process__deal">
+            <span class="process__price"><small>Стоимость</small><b>от&nbsp;20&nbsp;000&nbsp;₽</b></span>
+            <span class="process__promise"><i aria-hidden="true">✓</i>Работа ведётся до&nbsp;последней правки</span>
+            <button class="btn btn--lime process__cta" type="button" data-brief-open>Обсудить проект <span class="arrow">↗</span></button>
           </li>
           <li class="process__note">Кстати, этот сайт сделан именно так — на&nbsp;коде, без конструктора.</li>
         </ol>
@@ -508,6 +539,38 @@
       </div>
     </section>
 
+    <!-- ============ FAQ ============ -->
+    <section class="section faq" id="faq">
+      <div class="section__head reveal">
+        <span class="label">06 — Вопросы</span>
+        <h2 class="h2">Вопросы и&nbsp;ответы</h2>
+      </div>
+
+      <div class="faq__grid">
+        <article class="glass faq__promise reveal">
+          <span class="faq__promise-ico" aria-hidden="true">₽</span>
+          <h3>Цена без сюрпризов</h3>
+          <p>Результат, сумма и&nbsp;срок оговариваются заранее. За&nbsp;этот объём сумма по&nbsp;ходу работы не&nbsp;меняется, новую задачу добавляем, только если вы&nbsp;сами попросите.</p>
+          <p>В&nbsp;случае невыполнения задачи по&nbsp;каким-либо причинам предоплата возвращается.</p>
+        </article>
+
+        <div class="faq__list">
+          <details class="faq__item reveal">
+            <summary><span>Сроки</span><i aria-hidden="true"></i></summary>
+            <p>Обсуждаем сроки выполнения до&nbsp;начала работы, на&nbsp;этапе согласования проекта.</p>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Правки</span><i aria-hidden="true"></i></summary>
+            <p>Правки, касающиеся первоначального ТЗ, не&nbsp;ограничены. Работа ведётся до&nbsp;последней правки.</p>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Предоплата</span><i aria-hidden="true"></i></summary>
+            <p>25% от&nbsp;суммы заказа. В&nbsp;случае, если работа не&nbsp;выполнена, предоплата возвращается.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ CONTACT ============ -->
     <section class="section contact" id="contact">
       <div class="contact__card" data-contact>
@@ -531,7 +594,7 @@
         </div>
 
         <div class="contact__content">
-          <span class="label contact__label">06 — Контакты</span>
+          <span class="label contact__label">07 — Контакты</span>
           <h2 class="contact__title" aria-label="Давайте сделаем что-то крутое">
             <span class="contact__line" data-split>Давайте сделаем</span>
             <span class="contact__line contact__line--accent">
@@ -679,8 +742,8 @@
     <a href="#top">Наверх ↑</a>
   </footer>
 
-  <script src="main.js?v=17" defer></script>
-  <script type="module" src="avatar.js?v=17"></script>
-  <script src="brief.js?v=17" defer></script>
+  <script src="main.js?v=18" defer></script>
+  <script type="module" src="avatar.js?v=18"></script>
+  <script src="brief.js?v=18" defer></script>
 </body>
 </html>

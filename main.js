@@ -117,6 +117,28 @@
     revealEls.forEach((el) => el.classList.add('is-in'));
   }
 
+  // Цифры доверия: счёт от нуля, когда блок появляется на экране
+  const statNums = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const run = (el) => {
+      const to = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
+      const t0 = performance.now();
+      const tick = (now) => {
+        const p = Math.min(1, (now - t0) / 1400);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const countIo = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      run(e.target);
+      countIo.unobserve(e.target);
+    }), { threshold: 0.6 });
+    statNums.forEach((el) => { el.textContent = '0' + (el.dataset.suffix || ''); countIo.observe(el); });
+  }
+
   // Навигация: фон при скролле, бургер, активный пункт
   const nav = document.querySelector('.nav');
   const burger = document.querySelector('.nav__burger');
@@ -193,7 +215,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=17';
+  const VER = '?v=18';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
