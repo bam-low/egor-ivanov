@@ -1,0 +1,18 @@
+# Настройки Cloudflare Worker для заявок с сайта → Telegram.
+# Cloudflare собирает воркер из этой папки: в настройках сборки Root directory = worker
+#
+# name должен совпадать с именем воркера в панели Cloudflare.
+# При подключении репозитория Cloudflare по умолчанию называет воркер как репозиторий — egor-ivanov.
+name = "egor-ivanov"
+main = "telegram-form.js"
+compatibility_date = "2025-09-01"
+
+# не стирать переменные, добавленные в панели Cloudflare, при каждом деплое
+keep_vars = true
+
+# Адреса сайта, с которых принимаются заявки (через запятую). Свой домен — дописать сюда.
+[vars]
+ALLOWED_ORIGIN = "https://bam-low.github.io"
+
+# BOT_TOKEN и CHAT_ID сюда НЕ писать — только в панели Cloudflare как Secret
+# (Settings → Variables and Secrets), иначе токен окажется в открытом репозитории.
