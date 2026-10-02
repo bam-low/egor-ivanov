@@ -135,15 +135,12 @@
       page: location.href,
     };
     const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      showError(`Форма временно не работает. Напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a> или на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
+      return;
+    }
     submit.classList.add('is-sending');
     try {
-      if (!endpoint) {
-        // ДЕМО-РЕЖИМ: адрес воркера ещё не вписан — заявка никуда не отправляется,
-        // показываем только экран «спасибо». Убрать, когда подключим Cloudflare Worker.
-        await new Promise((r) => setTimeout(r, 700));
-        showDone(data);
-        return;
-      }
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 12000);
       const res = await fetch(endpoint, {
@@ -156,7 +153,7 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       showDone(data);
     } catch (err) {
-      showError(`Не получилось отправить заявку. Попробуйте ещё раз или напишите мне на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
+      showError(`Не получилось отправить заявку. Попробуйте ещё раз или напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a> или на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
     } finally {
       submit.classList.remove('is-sending');
     }
