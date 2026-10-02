@@ -68,7 +68,8 @@ export default {
     const token = String(env.BOT_TOKEN || '').trim().replace(/^bot/, '');
     const chatId = String(env.CHAT_ID || '').trim();
     if (!token || !chatId) {
-      console.error(`Не заданы секреты: ${!token ? 'BOT_TOKEN ' : ''}${!chatId ? 'CHAT_ID' : ''}`);
+      // только имена переменных, без значений — чтобы увидеть опечатку в названии
+      console.error(`Не заданы секреты: ${!token ? 'BOT_TOKEN ' : ''}${!chatId ? 'CHAT_ID' : ''}. Воркер видит переменные: ${Object.keys(env).join(', ') || 'никаких'}`);
       return new Response('not configured', { status: 500, headers: cors });
     }
 
