@@ -43,6 +43,27 @@ h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 700; line
 p { margin: 0; }
 em { font-style: normal; color: var(--lime); }
 ::selection { background: var(--lime); color: var(--bg); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Полоса прокрутки в стиле сайта: тонкая, фиолетово-розовая, при наведении — лайм.
+   Chrome, Edge, Safari, Яндекс Браузер — через ::-webkit-scrollbar (с градиентом),
+   Firefox — через scrollbar-color (только сплошной цвет). */
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid var(--bg); border-radius: 999px;
+    background: linear-gradient(180deg, var(--violet), var(--pink));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--lime); }
+  ::-webkit-scrollbar-corner { background: var(--bg); }
+  @supports (-moz-appearance: none) {
+    html { scrollbar-width: thin; scrollbar-color: var(--violet) var(--bg); }
+  }
+}
 
 /* ============ BUTTONS / CHIPS ============ */
 .btn {
@@ -898,6 +919,7 @@ html.is-locked { overflow: hidden; }
   border-top: 1px solid var(--line);
   color: var(--muted); font-size: 14px;
 }
+.footer a { padding: 10px 0; margin: -10px 0; } /* зона нажатия побольше */
 .footer a:hover { color: var(--text); }
 
 /* облегчённый режим (слабое устройство или браузер без аппаратного ускорения):
@@ -956,6 +978,8 @@ html.is-locked { overflow: hidden; }
 .brief [hidden] { display: none !important; }
 
 /* поле-«капсула» из стекла */
+.brief__captcha { display: flex; justify-content: center; }
+.brief__captcha:empty { display: none; }
 .glass-field {
   display: flex; align-items: flex-start; gap: 14px;
   padding: 14px 16px;
@@ -1207,8 +1231,16 @@ html.is-locked { overflow: hidden; }
   .hero__actions .btn { flex: 1; justify-content: center; }
   .contact__links .btn { width: 100%; justify-content: center; }
   .card-quote, .tools { padding: 26px; }
-  .stats { grid-template-columns: 1fr; }
-  .stat { min-height: 0; }
+  /* цифры — по две в ряд, статус — на всю ширину */
+  .stats { gap: 12px; }
+  .stat { min-height: 0; padding: 20px; gap: 8px; border-radius: 22px; }
+  .stat__num { font-size: 40px; }
+  .stat__text { font-size: 14px; }
+  /* шаги компактнее: номер слева, текст справа */
+  .step { display: grid; grid-template-columns: 46px 1fr; column-gap: 16px; align-items: start; }
+  .step__num { grid-row: span 2; margin-bottom: 0; }
+  .step h3 { margin: 10px 0 8px; }
+  .review__tags li { padding: 6px 12px; font-size: 12px; }
   .process__deal { padding: 20px; }
   .process__cta { width: 100%; justify-content: center; margin-left: 0; }
   .faq__promise { padding: 26px; }

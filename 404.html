@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Страница не найдена — Егор Иванов</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0a0a0d" />
+  <!-- GitHub Pages отдаёт эту страницу по любому неверному адресу, поэтому пути здесь от корня сайта.
+       BASE ниже подставляется скриптом: /egor-ivanov/ на github.io и / на своём домене. -->
+  <link rel="icon" href="/egor-ivanov/assets/icons/icon.svg" type="image/svg+xml" data-base-href="assets/icons/icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0d; --text: #f3f3f5; --muted: #9a9aa6; --line: rgba(255, 255, 255, .1);
+      --lime: #d4ff3f; --violet: #7c5cff; --pink: #ff4fd8;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; }
+    body {
+      min-height: 100%; overflow-x: hidden;
+      display: flex; flex-direction: column;
+      background:
+        radial-gradient(60% 50% at 50% 38%, rgba(124, 92, 255, .22), transparent 70%),
+        radial-gradient(40% 40% at 85% 90%, rgba(255, 79, 216, .1), transparent 70%),
+        var(--bg);
+      color: var(--text); font-family: "Manrope", system-ui, sans-serif; font-size: 17px; line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .top { padding: 24px clamp(16px, 4vw, 56px); }
+    .logo { font-family: "Unbounded", "Arial Black", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.02em; }
+    .logo span { color: var(--lime); }
+
+    main {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0 16px 64px; text-align: center; position: relative;
+    }
+    .label { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .code {
+      display: flex; align-items: center; justify-content: center; gap: clamp(4px, 1.5vw, 18px);
+      margin: 10px 0 6px;
+      font-family: "Unbounded", "Arial Black", sans-serif; font-weight: 900;
+      font-size: clamp(110px, 27vw, 300px); line-height: 1; letter-spacing: -.05em;
+    }
+    .code > span { animation: rise .9s var(--ease) both; }
+    .code > span:last-child { animation-delay: .16s; color: var(--lime); }
+    /* «ноль» — портал с персонажем */
+    .zero {
+      position: relative; flex-shrink: 0;
+      width: .78em; height: .78em; border-radius: 50%;
+      animation: rise .9s var(--ease) .08s both;
+    }
+    .zero::before {
+      content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(circle at 50% 40%, rgba(124, 92, 255, .9), rgba(124, 92, 255, .25) 55%, rgba(10, 10, 13, .9) 75%);
+      box-shadow: inset 0 0 0 .045em rgba(212, 255, 63, .85);
+    }
+    .zero__ring {
+      position: absolute; inset: -.07em; border-radius: 50%;
+      border: .012em dashed rgba(255, 255, 255, .35);
+      animation: spin 18s linear infinite;
+    }
+    .zero__img {
+      position: absolute; left: 50%; bottom: 0; width: 92%; height: auto;
+      transform: translateX(-50%);
+      border-radius: 0 0 50% 50% / 0 0 46% 46%;
+      animation: bob 4s ease-in-out infinite;
+    }
+    h1 {
+      font-family: "Unbounded", "Arial Black", sans-serif; font-weight: 700;
+      font-size: clamp(26px, 4vw, 44px); letter-spacing: -.02em; line-height: 1.15;
+      margin-top: 18px; animation: rise .9s var(--ease) .24s both;
+    }
+    p.text { max-width: 520px; margin-top: 14px; color: var(--muted); animation: rise .9s var(--ease) .3s both; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; animation: rise .9s var(--ease) .36s both; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 26px; border-radius: 999px;
+      font-weight: 700; font-size: 16px;
+      transition: transform .4s var(--ease), background .3s, border-color .3s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+    .btn--lime { background: var(--lime); color: var(--bg); box-shadow: 0 10px 40px -10px rgba(212, 255, 63, .55); }
+    .btn--ghost { border: 1px solid var(--line); background: rgba(255, 255, 255, .04); }
+    .btn--ghost:hover { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .2); }
+    .btn .arrow { transition: transform .4s var(--ease); }
+    .btn:hover .arrow { transform: translate(3px, -3px); }
+
+    .shape { position: absolute; pointer-events: none; animation: float 7s ease-in-out infinite; }
+    .shape--star { color: var(--lime); font-size: 34px; top: 16%; left: 12%; }
+    .shape--star2 { color: #a996ff; font-size: 22px; top: 24%; right: 14%; animation-delay: -2s; }
+    .shape--dot { width: 14px; height: 14px; border-radius: 50%; background: var(--pink); bottom: 22%; left: 18%; animation-delay: -4s; }
+    .shape--ring { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(212, 255, 63, .6); bottom: 18%; right: 16%; animation-delay: -1s; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
+    @keyframes bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4%); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-14px) rotate(12deg); } }
+
+    @media (max-width: 560px) {
+      .actions .btn { width: 100%; justify-content: center; }
+      .shape--star { top: 8%; left: 8%; }
+      .shape--star2 { top: 12%; right: 10%; }
+      .shape--dot, .shape--ring { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="/egor-ivanov/" data-base-href="">ivanov<span>.</span></a>
+  </header>
+
+  <main>
+    <span class="shape shape--star" aria-hidden="true">✦</span>
+    <span class="shape shape--star2" aria-hidden="true">✦</span>
+    <span class="shape shape--dot" aria-hidden="true"></span>
+    <span class="shape shape--ring" aria-hidden="true"></span>
+
+    <span class="label">Ошибка 404</span>
+    <div class="code" aria-label="404">
+      <span aria-hidden="true">4</span>
+      <span class="zero" aria-hidden="true">
+        <span class="zero__ring"></span>
+        <img class="zero__img" data-base-src="assets/avatar.webp" width="1151" height="1250" alt="" />
+      </span>
+      <span aria-hidden="true">4</span>
+    </div>
+    <h1>Такой страницы нет</h1>
+    <p class="text">Возможно, ссылка устарела или в&nbsp;адресе опечатка. На&nbsp;главной всё на&nbsp;месте: работы, цены и&nbsp;форма заявки.</p>
+    <div class="actions">
+      <a class="btn btn--lime" href="/egor-ivanov/" data-base-href="">На&nbsp;главную <span class="arrow">↗</span></a>
+      <a class="btn btn--ghost" href="https://t.me/ivanov_web" target="_blank" rel="noopener">Написать в&nbsp;Telegram <span class="arrow">↗</span></a>
+    </div>
+  </main>
+
+  <script>
+    // На github.io сайт живёт в /egor-ivanov/, на своём домене — в корне
+    (() => {
+      const base = location.pathname.startsWith('/egor-ivanov') ? '/egor-ivanov/' : '/';
+      document.querySelectorAll('[data-base-href]').forEach((el) => { el.setAttribute('href', base + el.dataset.baseHref); });
+      document.querySelectorAll('[data-base-src]').forEach((el) => { el.setAttribute('src', base + el.dataset.baseSrc); });
+    })();
+  </script>
+</body>
+</html>
