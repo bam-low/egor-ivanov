@@ -64,11 +64,24 @@ export default {
     if (platform === 'other') lines.push(`<b>Связь (${CHANNELS[channel] || '—'}):</b> ${esc(contact)}${link ? `\n${link}` : ''}`);
     if (comment) lines.push(`<b>Комментарий:</b> ${esc(comment)}`);
 
-    const tg = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+    // пробелы и переносы, случайно скопированные вместе с токеном или id, ломают запрос
+    const token = String(env.BOT_TOKEN || '').trim().replace(/^bot/, '');
+    const chatId = String(env.CHAT_ID || '').trim();
+    if (!token || !chatId) {
+      console.error(`Не заданы секреты: ${!token ? 'BOT_TOKEN ' : ''}${!chatId ? 'CHAT_ID' : ''}`);
+      return new Response('not configured', { status: 500, headers: cors });
+    }
+
+    const tg = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: env.CHAT_ID, text: lines.join('\n'), parse_mode: 'HTML', disable_web_page_preview: true }),
+      body: JSON.stringify({ chat_id: chatId, text: lines.join('\n'), parse_mode: 'HTML', disable_web_page_preview: true }),
     });
+    if (!tg.ok) {
+      // причина от Telegram попадёт в логи воркера (Observability), токен в лог не пишем
+      const info = await tg.json().catch(() => ({}));
+      console.error(`Telegram ${tg.status}: ${info.description || 'нет описания'}`);
+    }
     return new Response(tg.ok ? 'ok' : 'telegram error', { status: tg.ok ? 200 : 502, headers: cors });
   },
 };

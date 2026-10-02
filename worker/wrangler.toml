@@ -9,6 +9,8 @@ compatibility_date = "2025-09-01"
 
 # адрес вида egor-ivanov.<логин>.workers.dev — на него отправляет форма сайта
 workers_dev = true
+# адреса предпросмотра *-egor-ivanov.<логин>.workers.dev (включены в панели)
+preview_urls = true
 
 # не стирать переменные, добавленные в панели Cloudflare, при каждом деплое
 keep_vars = true
