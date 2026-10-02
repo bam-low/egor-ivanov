@@ -350,7 +350,15 @@ em { font-style: normal; color: var(--lime); }
 .card-quote { position: relative; padding: 36px; display: flex; flex-direction: column; gap: 18px; }
 .card-quote__mark { font-family: var(--font-display); font-size: 80px; line-height: .6; color: var(--lime); height: 34px; }
 .card-quote p { font-size: 19px; line-height: 1.5; }
-.card-quote__sign { color: var(--muted); font-weight: 600; margin-top: auto; }
+.card-quote__author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.card-quote__author b { display: block; font-size: 15px; }
+.card-quote__author small { display: block; color: var(--muted); font-size: 13px; }
+.card-quote__ava {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 14px;
+}
 .tools { padding: 36px; }
 .tools__title { font-size: 20px; margin-bottom: 22px; }
 .tools__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
@@ -520,6 +528,41 @@ em { font-style: normal; color: var(--lime); }
 html.is-locked { overflow: hidden; }
 
 /* Process */
+/* три формата работы — переключатели над шагами */
+.formats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+.format {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; border-radius: 22px;
+  border: 1px solid var(--line); background: var(--bg-2);
+  color: var(--text); font: inherit; text-align: left; cursor: pointer;
+  transition: border-color .35s, background .35s, transform .4s var(--ease);
+}
+.format:hover { border-color: rgba(255, 255, 255, .2); transform: translateY(-2px); }
+.format[aria-selected="true"] { border-color: rgba(212, 255, 63, .55); background: linear-gradient(160deg, rgba(212, 255, 63, .1), rgba(212, 255, 63, .02)), var(--bg-2); }
+.format:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+.format__ico {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 46px; height: 46px; border-radius: 14px;
+  background: var(--surface-2); color: var(--text);
+  transition: background .35s, color .35s;
+}
+.format__ico svg { width: 22px; height: 22px; }
+.format[aria-selected="true"] .format__ico { background: var(--lime); color: var(--bg); }
+.format__text b { display: block; font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+.format__text small { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+.process__list[hidden] { display: none; }
+/* шаги выбранного формата проявляются по очереди */
+.process__list.is-active .step { animation: stepIn .55s var(--ease) both; }
+.process__list.is-active .step:nth-child(2) { animation-delay: .06s; }
+.process__list.is-active .step:nth-child(3) { animation-delay: .12s; }
+.process__list.is-active .step:nth-child(4) { animation-delay: .18s; }
+@keyframes stepIn { from { opacity: 0; transform: translateY(16px); } }
+.process__note {
+  grid-column: 1 / -1; margin-top: 18px;
+  padding: 12px 18px; border-radius: 16px;
+  border: 1px dashed rgba(212, 255, 63, .35); color: #d6d6de; font-size: 14px;
+}
+.process__note::before { content: "✦ "; color: var(--lime); }
 .process__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
 .step { padding: 30px 28px 10px 0; position: relative; }
 .step + .step { padding-left: 28px; border-left: 1px solid var(--line); }
@@ -1060,6 +1103,7 @@ html.is-locked { overflow: hidden; }
 
   .about__grid { grid-template-columns: 1fr; }
   .works__grid { grid-template-columns: 1fr; gap: 44px; }
+  .formats { grid-template-columns: 1fr; }
   .work, .work--wide, .work:last-child:nth-child(odd) { grid-column: auto; }
   .works__hint { text-align: left; }
   .viewer { width: 100%; height: 100%; border-radius: 0; border: 0; }
