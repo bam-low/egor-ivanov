@@ -7,12 +7,20 @@ name = "egor-ivanov"
 main = "telegram-form.js"
 compatibility_date = "2025-09-01"
 
+# адрес вида egor-ivanov.<логин>.workers.dev — на него отправляет форма сайта
+workers_dev = true
+
 # не стирать переменные, добавленные в панели Cloudflare, при каждом деплое
 keep_vars = true
 
 # Адреса сайта, с которых принимаются заявки (через запятую). Свой домен — дописать сюда.
 [vars]
 ALLOWED_ORIGIN = "https://bam-low.github.io"
+
+# Логи воркера в панели (Observability / Logs) — чтобы видеть, что пошло не так с заявкой
+[observability]
+enabled = true
+head_sampling_rate = 1
 
 # BOT_TOKEN и CHAT_ID сюда НЕ писать — только в панели Cloudflare как Secret
 # (Settings → Variables and Secrets), иначе токен окажется в открытом репозитории.
