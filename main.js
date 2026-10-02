@@ -139,6 +139,12 @@
     statNums.forEach((el) => { el.textContent = '0' + (el.dataset.suffix || ''); countIo.observe(el); });
   }
 
+  // Вопросы и ответы: открыт только один ответ (name="faq" делает так же в новых браузерах, это — для старых)
+  const faqItems = [...document.querySelectorAll('.faq__item')];
+  faqItems.forEach((item) => item.addEventListener('toggle', () => {
+    if (item.open) faqItems.forEach((other) => { if (other !== item && other.open) other.open = false; });
+  }));
+
   // Навигация: фон при скролле, бургер, активный пункт
   const nav = document.querySelector('.nav');
   const burger = document.querySelector('.nav__burger');
@@ -215,7 +221,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=18';
+  const VER = '?v=19';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
