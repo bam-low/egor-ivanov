@@ -14,6 +14,25 @@
   const submit = dialog.querySelector('.brief__submit');
   const kworkLink = dialog.querySelector('.brief__kwork');
   const KWORK = 'https://kwork.ru/user/egor-c';
+  let openedAt = 0; // когда открыли форму — боты заполняют её за доли секунды
+
+  // Cloudflare Turnstile («я не робот»): включается, если у формы задан data-turnstile (ключ сайта).
+  // Скрипт грузится только при первом открытии формы; обычно проверка проходит незаметно.
+  const sitekey = form.dataset.turnstile;
+  const captchaBox = dialog.querySelector('.brief__captcha');
+  let captchaId = null;
+  const loadCaptcha = () => {
+    if (!sitekey || captchaId !== null || !captchaBox) return;
+    captchaId = false;
+    window.onBriefTurnstile = () => {
+      captchaId = window.turnstile.render(captchaBox, { sitekey, theme: 'dark', language: 'ru', appearance: 'interaction-only' });
+    };
+    const sc = document.createElement('script');
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onBriefTurnstile';
+    sc.async = true;
+    document.head.append(sc);
+  };
+  const captchaToken = () => (captchaId ? window.turnstile.getResponse(captchaId) || '' : '');
 
   // Пока форма открыта, бесконечные анимации страницы стоят на паузе:
   // стеклу не нужно заново размывать фон на каждом кадре
@@ -28,6 +47,8 @@
   const open = () => {
     if (dialog.open) return;
     pausePage();
+    loadCaptcha();
+    if (!openedAt) openedAt = Date.now();
     root.classList.add('is-locked');
     dialog.showModal();
     setTimeout(() => form.elements.name.focus({ preventScroll: true }), 350);
@@ -111,6 +132,7 @@
 
   const reset = () => {
     form.reset();
+    openedAt = 0;
     contactBox.hidden = true;
     stepDone.hidden = true;
     stepForm.hidden = false;
@@ -132,11 +154,17 @@
       contact: f.platform.value === 'other' ? f.contact.value.trim() : '',
       comment: f.comment.value.trim(),
       website: f.website.value, // ловушка для ботов
+      elapsed: openedAt ? Date.now() - openedAt : 0,
+      turnstile: captchaToken(),
       page: location.href,
     };
     const endpoint = form.dataset.endpoint;
     if (!endpoint) {
       showError(`Форма временно не работает. Напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a> или на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
+      return;
+    }
+    if (sitekey && !data.turnstile) {
+      showError('Секунду — проверяем, что вы не робот. Нажмите «Отправить» ещё раз.');
       return;
     }
     submit.classList.add('is-sending');
@@ -150,6 +178,11 @@
         signal: ctrl.signal,
       });
       clearTimeout(timer);
+      if (captchaId) window.turnstile.reset(captchaId); // токен одноразовый
+      if (res.status === 429) {
+        showError('Слишком много заявок подряд. Подождите минуту или напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a>.');
+        return;
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       showDone(data);
     } catch (err) {

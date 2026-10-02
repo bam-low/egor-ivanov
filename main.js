@@ -150,7 +150,7 @@
   const burger = document.querySelector('.nav__burger');
   const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  requestAnimationFrame(onScroll); // не заставляем браузер считать раскладку посреди загрузки
 
   burger.addEventListener('click', () => {
     const open = nav.classList.toggle('is-open');
@@ -221,7 +221,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=19';
+  const VER = '?v=20';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию

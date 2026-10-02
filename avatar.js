@@ -30,13 +30,20 @@ function useImage(src) {
   img.alt = 'Егор';
   img.decoding = 'async';
   img.fetchPriority = 'high';
+  img.width = 1151; img.height = 1250; // размеры исходника — место под картинку резервируется сразу
+  // уменьшенная версия 800px (data-avatar-small / data-avatar-avif-small) — для телефонов и обычных экранов;
+  // браузер сам выберет её или полную по ширине экрана и плотности пикселей
+  const SIZES = '(max-width: 860px) 88vw, 600px';
+  const set = (small, full) => (small ? `${small} 800w, ${full} 1151w` : full);
+  const { avatarAvif: avif, avatarSmall: small, avatarAvifSmall: avifSmall } = stage.dataset;
+  if (small) { img.srcset = set(small, src); img.sizes = SIZES; }
   // если рядом лежит AVIF-версия (data-avatar-avif) — браузер возьмёт её, она легче
-  const avif = stage.dataset.avatarAvif;
   if (avif) {
     const picture = document.createElement('picture');
     const source = document.createElement('source');
     source.type = 'image/avif';
-    source.srcset = avif;
+    source.srcset = set(avifSmall, avif);
+    if (avifSmall) source.sizes = SIZES;
     picture.append(source, img);
     img.src = src;
     wrap.appendChild(picture);

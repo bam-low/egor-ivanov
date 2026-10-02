@@ -6,6 +6,11 @@
 //   CHAT_ID         — ваш chat id (куда присылать заявки)
 //   ALLOWED_ORIGIN  — адрес сайта (без пути), например https://bam-low.github.io;
 //                     несколько адресов — через запятую: https://bam-low.github.io, https://ivanov.design
+//   TURNSTILE_SECRET — необязательно: секретный ключ Cloudflare Turnstile (тип Secret).
+//                     Если задан — заявка принимается только с пройденной проверкой «не робот».
+//
+// Защита от спама: ловушка-поле, слишком быстрое заполнение, лимит заявок с одного IP
+// (привязка FORM_LIMIT в wrangler.toml) и, если включён, Turnstile.
 
 const LABELS = { kwork: 'Kwork', other: 'Другая платформа' };
 const CHANNELS = { telegram: 'Telegram', phone: 'Телефон', whatsapp: 'WhatsApp' };
@@ -34,8 +39,37 @@ export default {
     let d;
     try { d = await request.json(); } catch { return new Response('Bad request', { status: 400, headers: cors }); }
 
-    // ловушка для спам-ботов: человек это поле не заполняет
-    if (d.website) return new Response('ok', { headers: cors });
+    // ловушка для спам-ботов: человек это поле не заполняет.
+    // Форму, заполненную быстрее 3 секунд, тоже молча отбрасываем — так печатают только боты.
+    // Боту отвечаем «ok», чтобы он не понял, что его отсеяли.
+    if (d.website || (typeof d.elapsed === 'number' && d.elapsed < 3000)) {
+      console.log('Отсеяна заявка бота');
+      return new Response('ok', { headers: cors });
+    }
+
+    // не больше 5 заявок в минуту с одного адреса
+    const ip = request.headers.get('CF-Connecting-IP') || '';
+    if (env.FORM_LIMIT && ip) {
+      const { success } = await env.FORM_LIMIT.limit({ key: ip });
+      if (!success) {
+        console.warn('Слишком много заявок с одного адреса');
+        return new Response('Too many requests', { status: 429, headers: cors });
+      }
+    }
+
+    // проверка Cloudflare Turnstile («я не робот»), если задан секретный ключ
+    if (env.TURNSTILE_SECRET) {
+      const form = new FormData();
+      form.append('secret', env.TURNSTILE_SECRET);
+      form.append('response', String(d.turnstile || ''));
+      if (ip) form.append('remoteip', ip);
+      const check = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: form })
+        .then((r) => r.json()).catch(() => ({ success: false }));
+      if (!check.success) {
+        console.warn(`Turnstile не пройден: ${(check['error-codes'] || []).join(', ') || 'нет ответа'}`);
+        return new Response('Captcha failed', { status: 403, headers: cors });
+      }
+    }
 
     const name = clip(d.name, 60);
     const project = clip(d.project, 120);
