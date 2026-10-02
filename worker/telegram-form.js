@@ -4,7 +4,8 @@
 // Переменные окружения (Settings → Variables and Secrets):
 //   BOT_TOKEN       — токен бота от @BotFather (тип Secret)
 //   CHAT_ID         — ваш chat id (куда присылать заявки)
-//   ALLOWED_ORIGIN  — адрес сайта, например https://bam-low.github.io
+//   ALLOWED_ORIGIN  — адрес сайта (без пути), например https://bam-low.github.io;
+//                     несколько адресов — через запятую: https://bam-low.github.io, https://ivanov.design
 
 const LABELS = { kwork: 'Kwork', other: 'Другая платформа' };
 const CHANNELS = { telegram: 'Telegram', phone: 'Телефон', whatsapp: 'WhatsApp' };
@@ -15,9 +16,12 @@ const clip = (v, n) => String(v ?? '').trim().slice(0, n);
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
-    const allowed = env.ALLOWED_ORIGIN || '*';
+    // можно перечислить несколько адресов через запятую — например, GitHub Pages и свой домен
+    const list = (env.ALLOWED_ORIGIN || '*').split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
+    const anyOrigin = list.includes('*');
+    const originOk = anyOrigin || list.includes(origin);
     const cors = {
-      'Access-Control-Allow-Origin': allowed,
+      'Access-Control-Allow-Origin': anyOrigin ? '*' : (originOk ? origin : list[0]),
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Vary': 'Origin',
@@ -25,7 +29,7 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
     if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: cors });
     // заявки принимаем только с вашего сайта
-    if (allowed !== '*' && origin !== allowed) return new Response('Forbidden', { status: 403, headers: cors });
+    if (!originOk) return new Response('Forbidden', { status: 403, headers: cors });
 
     let d;
     try { d = await request.json(); } catch { return new Response('Bad request', { status: 400, headers: cors }); }

@@ -17,7 +17,7 @@
 4. **Settings → Variables and Secrets → Add**:
    - `BOT_TOKEN` — токен из BotFather, тип **Secret**;
    - `CHAT_ID` — ваш id из @userinfobot;
-   - `ALLOWED_ORIGIN` — `https://bam-low.github.io` (или ваш домен, если подключите свой).
+   - `ALLOWED_ORIGIN` — `https://bam-low.github.io` (только домен, без `/egor-ivanov`).
 5. Скопируйте адрес воркера вида `https://brief.<ваш-логин>.workers.dev`.
 
 ## 3. Подключить к сайту
@@ -26,3 +26,8 @@
 
 ## Проверка
 Откройте сайт → «Обсудить проект» → заполните → в Telegram придёт сообщение от вашего бота.
+
+## Когда подключите свой домен
+Воркер менять не нужно — у него свой адрес `*.workers.dev`, он не зависит от домена сайта.
+Достаточно в Cloudflare → воркер → **Settings → Variables** дописать новый домен в `ALLOWED_ORIGIN` через запятую:
+`https://bam-low.github.io, https://ваш-домен.ru` — заявки будут приходить с обоих адресов.
