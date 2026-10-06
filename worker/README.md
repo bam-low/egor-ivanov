@@ -46,8 +46,8 @@ Cloudflare сам выкладывает воркер при каждом изм
 
 ### Дополнительно: Cloudflare Turnstile («я не робот», бесплатно)
 Включать, только если спам всё-таки пойдёт. Обычно проверка проходит незаметно, окошко появляется лишь при подозрениях.
-1. Cloudflare → **Turnstile** → **Add widget** → название любое, **Hostname**: `bam-low.github.io`
-   (и свой домен, когда появится), **Widget mode**: Managed → **Create**.
+1. Cloudflare → **Turnstile** → **Add widget** → название любое, **Hostname**: `ivanovdev.site`
+   и `bam-low.github.io`, **Widget mode**: Managed → **Create**.
 2. Cloudflare покажет **Site Key** и **Secret Key**.
 3. **Site Key** — вписать в `data-turnstile` у формы в `index.html` (или прислать мне). Дождаться, пока сайт обновится.
 4. Только после этого **Secret Key** — в воркер: **Settings → Variables and Secrets** → `TURNSTILE_SECRET`, тип **Secret** → **Deploy**.
