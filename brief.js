@@ -1,6 +1,7 @@
-// Форма «Обсудить проект»: открытие, проверка полей и отправка заявки.
-// Заявка уходит на адрес из data-endpoint (Cloudflare Worker из папки worker/),
-// а тот пересылает её в Telegram. Токен бота на сайте не хранится.
+// Форма «Обсудить проект» — помощник, а не отправка заявки.
+// Из ответов собирается готовое сообщение: оно копируется в буфер обмена, и человек сам отправляет его
+// мне в Telegram (текст подставляется в поле ввода) или на Kwork. Сайт ничего никуда не отправляет
+// и не хранит — так не нужно собирать персональные данные (152-ФЗ).
 (() => {
   const dialog = document.querySelector('.brief');
   if (!dialog) return;
@@ -8,31 +9,15 @@
   const root = document.documentElement;
   const stepForm = dialog.querySelector('[data-step="form"]');
   const stepDone = dialog.querySelector('[data-step="done"]');
-  const contactBox = dialog.querySelector('.brief__contact');
-  const contactInput = form.elements.contact;
   const errorBox = dialog.querySelector('.brief__error');
-  const submit = dialog.querySelector('.brief__submit');
-  const kworkLink = dialog.querySelector('.brief__kwork');
+  const submitText = dialog.querySelector('.brief__submit-text');
+  const doneText = dialog.querySelector('[data-done-text]');
+  const preview = dialog.querySelector('[data-preview]');
+  const go = dialog.querySelector('[data-go]');
+  const copyBtn = dialog.querySelector('[data-copy]');
+  const TELEGRAM = 'https://t.me/ivanov_web';
   const KWORK = 'https://kwork.ru/user/egor-c';
-  let openedAt = 0; // когда открыли форму — боты заполняют её за доли секунды
-
-  // Cloudflare Turnstile («я не робот»): включается, если у формы задан data-turnstile (ключ сайта).
-  // Скрипт грузится только при первом открытии формы; обычно проверка проходит незаметно.
-  const sitekey = form.dataset.turnstile;
-  const captchaBox = dialog.querySelector('.brief__captcha');
-  let captchaId = null;
-  const loadCaptcha = () => {
-    if (!sitekey || captchaId !== null || !captchaBox) return;
-    captchaId = false;
-    window.onBriefTurnstile = () => {
-      captchaId = window.turnstile.render(captchaBox, { sitekey, theme: 'dark', language: 'ru', appearance: 'interaction-only' });
-    };
-    const sc = document.createElement('script');
-    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onBriefTurnstile';
-    sc.async = true;
-    document.head.append(sc);
-  };
-  const captchaToken = () => (captchaId ? window.turnstile.getResponse(captchaId) || '' : '');
+  let message = '';
 
   // Пока форма открыта, бесконечные анимации страницы стоят на паузе:
   // стеклу не нужно заново размывать фон на каждом кадре
@@ -47,8 +32,6 @@
   const open = () => {
     if (dialog.open) return;
     pausePage();
-    loadCaptcha();
-    if (!openedAt) openedAt = Date.now();
     root.classList.add('is-locked');
     dialog.showModal();
     setTimeout(() => form.elements.name.focus({ preventScroll: true }), 350);
@@ -61,7 +44,7 @@
   dialog.addEventListener('close', () => {
     root.classList.remove('is-locked');
     resumePage();
-    // после успешной отправки следующая форма открывается чистой
+    // после готового сообщения следующая форма открывается чистой
     if (!stepDone.hidden) reset();
   });
   dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); }); // Esc — с анимацией
@@ -69,20 +52,11 @@
   dialog.querySelectorAll('[data-brief-close]').forEach((b) => b.addEventListener('click', close));
   document.querySelectorAll('[data-brief-open]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); open(); }));
 
-  // Поле «как связаться» — только для «другой платформы»
-  const placeholders = { telegram: '@username', phone: '+7 900 000-00-00', whatsapp: '+7 900 000-00-00' };
-  const syncChannel = () => {
-    const ch = form.elements.channel.value || 'telegram';
-    contactInput.placeholder = placeholders[ch];
-    contactInput.inputMode = ch === 'telegram' ? 'text' : 'tel';
-  };
+  // Надпись на кнопке зависит от выбранного мессенджера
+  const isKwork = () => form.elements.platform.value === 'kwork';
+  const syncPlatform = () => { submitText.textContent = isKwork() ? 'Продолжить на Kwork' : 'Продолжить в Telegram'; };
   form.addEventListener('change', (e) => {
-    if (e.target.name === 'platform') {
-      const other = e.target.value === 'other';
-      contactBox.hidden = !other;
-      if (other) setTimeout(() => contactInput.focus({ preventScroll: true }), 150);
-    }
-    if (e.target.name === 'channel') { syncChannel(); contactInput.focus({ preventScroll: true }); }
+    if (e.target.name === 'platform') syncPlatform();
     const field = e.target.closest('.glass-field');
     if (field) field.classList.remove('is-invalid');
   });
@@ -91,9 +65,7 @@
     if (field) field.classList.remove('is-invalid');
     errorBox.hidden = true;
   });
-  syncChannel();
-
-  const showError = (html) => { errorBox.innerHTML = html; errorBox.hidden = false; };
+  syncPlatform();
 
   const validate = () => {
     const f = form.elements;
@@ -101,30 +73,62 @@
     if (f.name.value.trim().length < 2) bad.push(f.name);
     if (f.project.value.trim().length < 2) bad.push(f.project);
     if (f.description.value.trim().length < 10) bad.push(f.description);
-    if (!f.platform.value) bad.push(dialog.querySelector('#pf-kwork'));
-    if (f.platform.value === 'other') {
-      const v = f.contact.value.trim();
-      const ok = f.channel.value === 'telegram'
-        ? /^@?[a-zA-Z0-9_]{4,32}$/.test(v) || /^\+?[\d\s()-]{10,18}$/.test(v)
-        : /^\+?[\d\s()-]{10,18}$/.test(v);
-      if (!ok) bad.push(f.contact);
-    }
     bad.forEach((el) => el.closest('.glass-field').classList.add('is-invalid'));
     if (bad.length) {
-      const msg = bad[0] === f.name ? 'Подскажите, как к вам обращаться.'
+      errorBox.textContent = bad[0] === f.name ? 'Подскажите, как к вам обращаться.'
         : bad[0] === f.description ? 'Опишите проект хотя бы парой предложений.'
-        : bad[0] === f.contact ? 'Проверьте контакт: для Telegram — @username, для телефона и WhatsApp — номер.'
-        : bad[0].name === 'platform' ? 'Выберите, где удобнее работать.'
         : 'Заполните отмеченные поля.';
-      showError(msg);
-      bad[0].focus({ preventScroll: false });
+      errorBox.hidden = false;
+      bad[0].focus();
     }
     return !bad.length;
   };
 
-  // успех: экран «я скоро свяжусь»; если выбран Kwork — ссылка на профиль
-  const showDone = (data) => {
-    kworkLink.hidden = data.platform !== 'kwork';
+  const build = () => {
+    const f = form.elements;
+    const lines = [
+      'Здравствуйте, Егор! Пишу с сайта ivanovdev.site.',
+      '',
+      `Меня зовут: ${f.name.value.trim()}`,
+      `Проект: ${f.project.value.trim()}`,
+      `Задача: ${f.description.value.trim()}`,
+    ];
+    const comment = f.comment.value.trim();
+    if (comment) lines.push(`Комментарий: ${comment}`);
+    return lines.join('\n');
+  };
+
+  // Копирование: современный способ, а если браузер не разрешил — через скрытое поле
+  const copy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      dialog.append(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      ta.remove();
+      return ok;
+    }
+  };
+
+  const showDone = (copied) => {
+    const kwork = isKwork();
+    preview.textContent = message;
+    // Telegram сам подставит текст в поле ввода чата; на Kwork его нужно вставить вручную
+    go.href = kwork ? KWORK : `${TELEGRAM}?text=${encodeURIComponent(message)}`;
+    go.firstChild.textContent = kwork ? 'Открыть Kwork ' : 'Открыть Telegram ';
+    doneText.textContent = kwork
+      ? (copied ? 'Текст скопирован. Откройте мой профиль на Kwork, нажмите «Написать» и вставьте его.'
+        : 'Скопируйте текст ниже, откройте мой профиль на Kwork, нажмите «Написать» и вставьте его.')
+      : (copied ? 'Откроется чат со мной — текст уже будет в поле ввода (и в буфере обмена). Останется нажать «Отправить».'
+        : 'Откроется чат со мной — текст уже будет в поле ввода. Останется нажать «Отправить».');
+    copyBtn.textContent = 'Скопировать ещё раз';
     stepForm.hidden = true;
     stepDone.hidden = false;
     dialog.scrollTop = 0;
@@ -132,63 +136,26 @@
 
   const reset = () => {
     form.reset();
-    openedAt = 0;
-    contactBox.hidden = true;
     stepDone.hidden = true;
     stepForm.hidden = false;
     errorBox.hidden = true;
-    kworkLink.hidden = true;
-    syncChannel();
+    syncPlatform();
   };
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (submit.classList.contains('is-sending') || !validate()) return;
-    const f = form.elements;
-    const data = {
-      name: f.name.value.trim(),
-      project: f.project.value.trim(),
-      description: f.description.value.trim(),
-      platform: f.platform.value,
-      channel: f.platform.value === 'other' ? f.channel.value : '',
-      contact: f.platform.value === 'other' ? f.contact.value.trim() : '',
-      comment: f.comment.value.trim(),
-      website: f.website.value, // ловушка для ботов
-      elapsed: openedAt ? Date.now() - openedAt : 0,
-      turnstile: captchaToken(),
-      page: location.href,
-    };
-    const endpoint = form.dataset.endpoint;
-    if (!endpoint) {
-      showError(`Форма временно не работает. Напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a> или на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
-      return;
-    }
-    if (sitekey && !data.turnstile) {
-      showError('Секунду — проверяем, что вы не робот. Нажмите «Отправить» ещё раз.');
-      return;
-    }
-    submit.classList.add('is-sending');
-    try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 12000);
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        signal: ctrl.signal,
-      });
-      clearTimeout(timer);
-      if (captchaId) window.turnstile.reset(captchaId); // токен одноразовый
-      if (res.status === 429) {
-        showError('Слишком много заявок подряд. Подождите минуту или напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a>.');
-        return;
-      }
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      showDone(data);
-    } catch (err) {
-      showError(`Не получилось отправить заявку. Попробуйте ещё раз или напишите мне в&nbsp;<a href="https://t.me/ivanov_web" target="_blank" rel="noopener">Telegram</a> или на&nbsp;<a href="${KWORK}" target="_blank" rel="noopener">Kwork</a>.`);
-    } finally {
-      submit.classList.remove('is-sending');
-    }
+    if (!validate()) return;
+    message = build();
+    showDone(await copy(message));
+  });
+
+  // перед переходом в мессенджер копируем ещё раз — на случай, если буфер успели перезаписать
+  go.addEventListener('click', () => { copy(message); });
+  copyBtn.addEventListener('click', async () => {
+    copyBtn.textContent = (await copy(message)) ? 'Скопировано ✓' : 'Выделите текст и скопируйте';
+  });
+  dialog.querySelector('[data-edit]').addEventListener('click', () => {
+    stepDone.hidden = true;
+    stepForm.hidden = false;
   });
 })();
