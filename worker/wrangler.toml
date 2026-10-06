@@ -17,7 +17,7 @@ keep_vars = true
 
 # Адреса сайта, с которых принимаются заявки (через запятую). Свой домен — дописать сюда.
 [vars]
-ALLOWED_ORIGIN = "https://bam-low.github.io"
+ALLOWED_ORIGIN = "https://ivanovdev.site, https://www.ivanovdev.site, https://bam-low.github.io"
 
 # Защита от спама: не больше 5 заявок в минуту с одного IP (бесплатно, работает внутри Cloudflare)
 [[ratelimits]]
