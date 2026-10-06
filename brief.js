@@ -2,6 +2,8 @@
 // Из ответов собирается готовое сообщение: оно копируется в буфер обмена, и человек сам отправляет его
 // мне в Telegram (текст подставляется в поле ввода) или на Kwork. Сайт ничего никуда не отправляет
 // и не хранит — так не нужно собирать персональные данные (152-ФЗ).
+// Единственное, что уходит с сайта, — сигнал «открыли Telegram/Kwork» (одно слово, без данных о человеке)
+// на адрес из data-notify: Cloudflare Worker присылает мне об этом уведомление.
 (() => {
   const dialog = document.querySelector('.brief');
   if (!dialog) return;
@@ -18,6 +20,18 @@
   const TELEGRAM = 'https://t.me/ivanov_web';
   const KWORK = 'https://kwork.ru/user/egor-c';
   let message = '';
+  let notified = false; // одно уведомление на одно собранное сообщение
+
+  const notify = (via) => {
+    const url = form.dataset.notify;
+    if (!url || notified) return;
+    notified = true;
+    // text/plain — без лишнего предварительного запроса; sendBeacon доходит, даже если вкладка уходит в мессенджер
+    const body = JSON.stringify({ via });
+    if (!(navigator.sendBeacon && navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' })))) {
+      fetch(url, { method: 'POST', body, mode: 'no-cors', keepalive: true }).catch(() => {});
+    }
+  };
 
   // Пока форма открыта, бесконечные анимации страницы стоят на паузе:
   // стеклу не нужно заново размывать фон на каждом кадре
@@ -146,11 +160,12 @@
     e.preventDefault();
     if (!validate()) return;
     message = build();
+    notified = false;
     showDone(await copy(message));
   });
 
   // перед переходом в мессенджер копируем ещё раз — на случай, если буфер успели перезаписать
-  go.addEventListener('click', () => { copy(message); });
+  go.addEventListener('click', () => { copy(message); notify(isKwork() ? 'kwork' : 'telegram'); });
   copyBtn.addEventListener('click', async () => {
     copyBtn.textContent = (await copy(message)) ? 'Скопировано ✓' : 'Выделите текст и скопируйте';
   });

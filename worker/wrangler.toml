@@ -1,4 +1,4 @@
-# Настройки Cloudflare Worker для заявок с сайта → Telegram.
+# Настройки Cloudflare Worker: уведомление в Telegram, когда на сайте собрали сообщение (без данных о человеке).
 # Cloudflare собирает воркер из этой папки: в настройках сборки Root directory = worker
 #
 # name должен совпадать с именем воркера в панели Cloudflare.
@@ -15,20 +15,19 @@ preview_urls = true
 # не стирать переменные, добавленные в панели Cloudflare, при каждом деплое
 keep_vars = true
 
-# Адреса сайта, с которых принимаются заявки (через запятую). Свой домен — дописать сюда.
+# Адреса сайта, с которых принимаются уведомления (через запятую)
 [vars]
-ALLOWED_ORIGIN = "https://ivanovdev.site, https://www.ivanovdev.site, https://bam-low.github.io"
+ALLOWED_ORIGIN = "https://ivanovdev.site, https://www.ivanovdev.site"
 
-# Защита от спама: не больше 5 заявок в минуту с одного IP (бесплатно, работает внутри Cloudflare)
+# Защита от накрутки: не больше 10 уведомлений в минуту на весь сайт (общий счётчик, IP не учитывается)
 [[ratelimits]]
 name = "FORM_LIMIT"
 namespace_id = "1001"
-simple = { limit = 5, period = 60 }
+simple = { limit = 10, period = 60 }
 
-# Логи воркера в панели (Observability / Logs) — чтобы видеть, что пошло не так с заявкой
+# Журнал запросов в панели выключен: в нём сохранялись бы IP-адреса посетителей
 [observability]
-enabled = true
-head_sampling_rate = 1
+enabled = false
 
 # BOT_TOKEN и CHAT_ID сюда НЕ писать — только в панели Cloudflare как Secret
 # (Settings → Variables and Secrets), иначе токен окажется в открытом репозитории.
