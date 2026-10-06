@@ -978,8 +978,6 @@ html.is-locked { overflow: hidden; }
 .brief [hidden] { display: none !important; }
 
 /* поле-«капсула» из стекла */
-.brief__captcha { display: flex; justify-content: center; }
-.brief__captcha:empty { display: none; }
 .glass-field {
   display: flex; align-items: flex-start; gap: 14px;
   padding: 14px 16px;
@@ -1061,8 +1059,6 @@ html.is-locked { overflow: hidden; }
 .segmented:has(input:nth-of-type(3):checked) .segmented__thumb { transform: translateX(200%); }
 .glass-field.is-invalid .segmented { box-shadow: inset 0 0 0 1px rgba(255, 79, 216, .7); }
 
-.brief__contact { animation: fieldIn .45s var(--ease) both; }
-.brief__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .brief__error { margin: 2px 6px; color: #ff8ae6; font-size: 14px; font-weight: 600; }
 .brief__error a { color: var(--lime); text-decoration: underline; }
 
@@ -1075,14 +1071,6 @@ html.is-locked { overflow: hidden; }
   transition: transform .3s var(--ease);
 }
 .brief__submit:hover, .brief__ok:hover { transform: translateY(-2px); }
-.brief__spinner {
-  position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
-  border-radius: 50%; border: 2.5px solid rgba(10, 10, 13, .25); border-top-color: var(--bg);
-  opacity: 0;
-}
-.brief__submit.is-sending .brief__submit-text { opacity: 0; }
-.brief__submit.is-sending .brief__spinner { opacity: 1; animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* экран «заявка отправлена» */
 .brief__done { align-items: center; text-align: center; padding: 10px 6px 4px; }
@@ -1096,13 +1084,35 @@ html.is-locked { overflow: hidden; }
 @keyframes pop { from { transform: scale(.5); opacity: 0; } }
 .brief__done-title { font-size: 26px; }
 .brief__done-text { color: #d0d0da; font-size: 17px; max-width: 360px; }
-.brief__kwork {
-  margin-top: 4px; padding: 10px 18px; border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
-  font-weight: 700; font-size: 15px;
-}
 .brief__ok { align-self: stretch; margin-top: 14px; }
+/* кнопка-ссылка «Открыть Telegram / Kwork» выглядит как основная кнопка */
+.brief__go { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.brief__go .arrow { transition: transform .4s var(--ease); }
+.brief__go:hover .arrow { transform: translate(3px, -3px); }
+.brief__intro { margin: -6px 6px 6px; color: rgba(255, 255, 255, .7); font-size: 15px; line-height: 1.5; }
+.brief__privacy {
+  display: flex; gap: 8px; align-items: flex-start;
+  margin: 4px 8px 0; color: rgba(255, 255, 255, .5); font-size: 12.5px; line-height: 1.45;
+}
+.brief__privacy i { font-style: normal; }
+/* готовое сообщение — как пузырь в мессенджере */
+.brief__preview {
+  align-self: stretch; margin: 8px 0 0; padding: 14px 16px;
+  max-height: 200px; overflow: auto;
+  border-radius: 20px 20px 6px 20px;
+  background: linear-gradient(160deg, rgba(124, 92, 255, .35), rgba(124, 92, 255, .18));
+  border: 1px solid rgba(169, 150, 255, .35);
+  color: #f3f1ff; font: 500 14px/1.5 var(--font-body); text-align: left;
+  white-space: pre-wrap; word-break: break-word;
+}
+.brief__preview:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.brief__done-actions { display: flex; justify-content: center; gap: 6px 22px; flex-wrap: wrap; margin-top: 4px; }
+.brief__link {
+  padding: 10px 4px; border: 0; background: none; cursor: pointer;
+  color: rgba(255, 255, 255, .75); font: 700 14px var(--font-body);
+  text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .3); text-underline-offset: 4px;
+}
+.brief__link:hover { color: #fff; }
 
 @media (max-width: 560px) {
   /* на телефоне — «шторка» снизу, как в iOS */
