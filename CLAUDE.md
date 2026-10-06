@@ -8,6 +8,7 @@
 ## Публикация
 - Сайт: **https://ivanovdev.site/** — GitHub Pages из `main` (репозиторий открытый: закрытый на бесплатном тарифе отключает Pages), свой домен через файл `CNAME`. Старый адрес https://bam-low.github.io/egor-ivanov/ GitHub сам перенаправляет на домен.
 - DNS у регистратора: 4 записи `A` для `@` → 185.199.108.153 / .109.153 / .110.153 / .111.153 (по желанию `AAAA` 2606:50c0:8000::153 … 8003::153), `CNAME` для `www` → `bam-low.github.io`. HTTPS — галочка Enforce HTTPS в Settings → Pages.
+- Подтверждение прав: мета-теги `yandex-verification` и `google-site-verification` в `<head>` (не удалять), TXT `_github-pages-challenge-bam-low` у регистратора — защита домена в GitHub.
 - Превью ссылки — `assets/og.jpg` (1200×630) + og-метатеги в `<head>`; `canonical`, `og:url`, `og:image`, `robots.txt`, `sitemap.xml` указывают на https://ivanovdev.site/ — при смене домена поменять везде (и `CNAME`).
 
 ## Аватар
