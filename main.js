@@ -222,7 +222,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=26';
+  const VER = '?v=27';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
@@ -315,6 +315,9 @@
       viewer.querySelector('.viewer__num').textContent = work.querySelector('.work__num').textContent;
       viewer.querySelector('.viewer__title').textContent = work.querySelector('.work__title').textContent;
       viewer.querySelector('.viewer__cat').textContent = work.querySelector('.work__cat').textContent;
+      // ссылка на живой сайт — только у работ с data-url
+      const site = viewer.querySelector('.viewer__site');
+      if (site) { site.hidden = !work.dataset.url; if (work.dataset.url) site.href = work.dataset.url; }
       vImg.alt = cardImg.alt;
       vBody.scrollTop = 0;
       // мгновенно — то, что уже загружено для этой карточки (никаких картинок чужого проекта),

@@ -547,6 +547,15 @@ em { font-style: normal; color: var(--lime); }
   transition: background .3s, color .3s, transform .4s var(--ease);
 }
 .work__open::before { content: ""; position: absolute; inset: 0; border-radius: 22px; }
+/* ссылка на живой сайт — поверх растянутой кнопки «открыть», чтобы её можно было нажать */
+.work__link {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+  color: var(--accent, var(--lime)); font-weight: 700; font-size: 15px;
+  text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px;
+}
+.work__link:hover { text-decoration-color: currentColor; }
+.work__link:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; border-radius: 6px; }
 .work:hover .work__open { background: var(--accent); color: #0a0a0d; transform: rotate(45deg); border-color: transparent; }
 .work__open:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
 
@@ -577,6 +586,14 @@ em { font-style: normal; color: var(--lime); }
 }
 .viewer__btn:hover { background: var(--lime); color: var(--bg); }
 .viewer__close:hover { background: #fff; }
+.viewer__nav { align-items: center; }
+.viewer__site {
+  display: inline-flex; align-items: center; gap: 6px; height: 46px; padding: 0 18px; margin-right: 4px;
+  border-radius: 999px; background: var(--lime); color: var(--bg); font-weight: 800; font-size: 14px; white-space: nowrap;
+}
+.viewer__site[hidden] { display: none; }
+.viewer__site-short { display: none; }
+.viewer__site:hover { background: #fff; }
 .viewer__body { flex: 1; overflow-y: auto; overscroll-behavior: contain; background: #fff; }
 .viewer__img { display: block; width: 100%; max-width: 1000px; margin: 0 auto; height: auto; }
 /* полоска загрузки, пока качается полная версия (сверху показана уже загруженная превью) */
@@ -1172,6 +1189,10 @@ html.is-locked { overflow: hidden; }
 .btn:hover .arrow--back { transform: translateX(-4px); }
 /* на странице всех работ — ровные ряды по три */
 .works__grid--all .work { grid-column: span 2; }
+/* если последняя работа одна в ряду (по три в ряд — только на широких экранах) — по центру */
+@media (min-width: 1101px) {
+  .works__grid--all .work:last-child:nth-child(3n+1) { grid-column: 3 / span 2; }
+}
 .portfolio__cta {
   display: flex; align-items: center; justify-content: space-between; gap: 24px 40px; flex-wrap: wrap;
   margin-top: clamp(56px, 7vw, 96px); padding: clamp(28px, 4vw, 48px);
@@ -1285,6 +1306,11 @@ html.is-locked { overflow: hidden; }
   .viewer { width: 100%; height: 100%; border-radius: 0; border: 0; }
   .viewer__head { padding: 12px 12px 12px 16px; }
   .viewer__btn { width: 40px; height: 40px; }
+  .viewer__site { height: 40px; padding: 0 14px; }
+  .viewer__site-long { display: none; }
+  .viewer__site-short { display: inline; }
+  /* у работ со ссылкой на сайт подпись на узком экране не помещается — оставляем номер и название */
+  .viewer:has(.viewer__site:not([hidden])) .viewer__cat { display: none; }
 }
 
 @media (max-width: 560px) {
