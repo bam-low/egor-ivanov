@@ -102,6 +102,9 @@ em { font-style: normal; color: var(--lime); }
 .ico--code { background: var(--lime); color: var(--bg); font-size: 10px; }
 .ico--ps { background: #0f1e36; color: #31a8ff; border: 1px solid #31a8ff55; }
 .ico--ai { background: var(--violet); color: #fff; font-size: 14px; }
+.ico--airtable { background: #fff; }
+.ico--airtable svg { width: 20px; height: 20px; }
+.ico--collabza { background: linear-gradient(135deg, var(--violet), var(--pink)); color: #fff; font-size: 14px; }
 .ico--react { background: #10141f; color: #61dafb; border: 1px solid #61dafb44; }
 .ico--react svg { width: 20px; height: 20px; }
 .ico--js { background: #f7df1e; color: #111; font-size: 11px; align-items: end; justify-items: end; padding: 0 4px 3px 0; }
