@@ -262,7 +262,10 @@
       </ul>
 
       <div class="about__grid">
-        <article class="glass card-quote reveal">
+        <!-- Цитата и список инструментов не нужны в описании сайта в поиске:
+             noindex — для Яндекса, data-nosnippet — для Google. Ключевые слова есть в заголовке, тексте первого экрана и разметке. -->
+        <!--noindex-->
+        <article class="glass card-quote reveal" data-nosnippet>
           <span class="card-quote__mark">“</span>
           <p>Веб-разработка — это не&nbsp;только создание красивых веб-сайтов, но&nbsp;и&nbsp;создание эффективного и&nbsp;приятного пользовательского опыта.</p>
           <footer class="card-quote__author">
@@ -274,7 +277,7 @@
           </footer>
         </article>
 
-        <article class="glass tools reveal">
+        <article class="glass tools reveal" data-nosnippet>
           <h3 class="tools__title">Инструменты</h3>
           <ul class="tools__list">
             <li><i class="ico ico--tilda">T</i>Tilda</li>
@@ -289,6 +292,7 @@
             <li><i class="ico ico--ai">✦</i>Нейросети</li>
           </ul>
         </article>
+        <!--/noindex-->
       </div>
     </section>
 
