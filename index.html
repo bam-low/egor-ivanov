@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Егор Иванов — веб-дизайнер</title>
-  <meta name="description" content="Егор Иванов — веб-дизайнер и разработчик. Сайты на Tilda и на коде: по вашему макету или под ключ с дизайном." />
+  <title>Разработка сайтов на Tilda под ключ. Интеграция с Airtable и Collabza — Егор Иванов</title>
+  <meta name="description" content="Веб-дизайнер Егор Иванов: сайты и лендинги на Tilda под ключ, вёрстка по макету Figma от 8 000 ₽, интеграция с Airtable и Collabza, сайты на коде. Москва, удалённо по всей России." />
   <link rel="canonical" href="https://ivanovdev.site/" />
   <!-- превью ссылки в Telegram, WhatsApp, VK, Kwork. При переезде на свой домен — поменять адреса -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
   <meta property="og:site_name" content="Егор Иванов" />
-  <meta property="og:title" content="Егор Иванов — веб-дизайн и разработка сайтов" />
-  <meta property="og:description" content="Сайты на Tilda и на коде, которые выглядят дорого и продают. Портфолио, отзывы и заявка на проект." />
+  <meta property="og:title" content="Разработка сайтов на Tilda под ключ — Егор Иванов" />
+  <meta property="og:description" content="Сайты и лендинги на Tilda под ключ, интеграция с Airtable и Collabza. Портфолио, цены и отзывы." />
   <meta property="og:url" content="https://ivanovdev.site/" />
   <meta property="og:image" content="https://ivanovdev.site/assets/og.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -22,16 +22,139 @@
   <meta name="yandex-verification" content="36000618f5199862" />
   <meta name="google-site-verification" content="cPPS5dFX-ao6MLBoV5sOtprBH6NT6VfLHwdZY-BYxPI" />
   <!-- иконка сайта: SVG для браузеров, ICO для Яндекса и старых браузеров, PNG для телефонов -->
-  <link rel="icon" href="favicon.ico?v=22" sizes="16x16 32x32 48x48" />
-  <link rel="icon" href="assets/icons/icon.svg?v=22" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=22" />
+  <link rel="icon" href="favicon.ico?v=23" sizes="16x16 32x32 48x48" />
+  <link rel="icon" href="assets/icons/icon.svg?v=23" type="image/svg+xml" />
+  <!-- PNG 120×120 — размер, который рекомендует Яндекс для выдачи; 48/96 — кратные 48 px для Google -->
+  <link rel="icon" href="assets/icons/icon-120.png?v=23" type="image/png" sizes="120x120" />
+  <link rel="icon" href="assets/icons/icon-96.png?v=23" type="image/png" sizes="96x96" />
+  <link rel="icon" href="assets/icons/icon-48.png?v=23" type="image/png" sizes="48x48" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=23" />
   <link rel="manifest" href="site.webmanifest" />
+
+  <!-- данные для поисковиков (schema.org): услуги, цены, вопросы — только то, что есть на странице -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": "https://ivanovdev.site/#service",
+  "name": "Егор Иванов — разработка сайтов на Tilda",
+  "description": "Разработка сайтов и лендингов на Tilda под ключ, вёрстка по макету Figma, интеграция с Airtable и Collabza, сайты на коде (HTML, CSS, JavaScript, React).",
+  "url": "https://ivanovdev.site/",
+  "image": "https://ivanovdev.site/assets/og.jpg",
+  "logo": "https://ivanovdev.site/assets/icons/icon-512.png",
+  "priceRange": "от 8 000 ₽",
+  "currenciesAccepted": "RUB",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Москва",
+    "addressCountry": "RU"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Россия"
+  },
+  "sameAs": [
+    "https://t.me/ivanov_web",
+    "https://kwork.ru/user/egor-c"
+  ],
+  "founder": {
+    "@type": "Person",
+    "name": "Егор Иванов",
+    "jobTitle": "Веб-дизайнер, Tilda-разработчик",
+    "url": "https://ivanovdev.site/"
+  },
+  "knowsAbout": [
+    "Tilda",
+    "Zero Block",
+    "Figma",
+    "Airtable",
+    "Collabza",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "React"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Форматы работы",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "name": "Сайт на Tilda по вашему макету (Figma → Tilda)",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 8000,
+          "priceCurrency": "RUB"
+        }
+      },
+      {
+        "@type": "Offer",
+        "name": "Дизайн + сайт на Tilda под ключ",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 15000,
+          "priceCurrency": "RUB"
+        }
+      },
+      {
+        "@type": "Offer",
+        "name": "Сайт на коде (HTML, CSS, JavaScript, React)",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 20000,
+          "priceCurrency": "RUB"
+        }
+      }
+    ]
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Какие сроки?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Обсуждаем сроки выполнения до начала работы, на этапе согласования проекта."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Сколько правок?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Правки, касающиеся первоначального ТЗ, не ограничены. Работа ведётся до последней правки."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Какая предоплата?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "25% от суммы заказа. В случае, если работа не выполнена, предоплата возвращается."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Может ли цена вырасти по ходу работы?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Результат, сумма и срок оговариваются заранее. За этот объём сумма по ходу работы не меняется, новую задачу добавляем, только если вы сами попросите. В случае невыполнения задачи по каким-либо причинам предоплата возвращается."
+      }
+    }
+  ]
+}
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=22" />
-  <link rel="preload" as="image" type="image/avif" href="assets/avatar.avif?v=22" imagesrcset="assets/avatar-800.avif?v=22 800w, assets/avatar.avif?v=22 1151w" imagesizes="(max-width: 860px) 88vw, 600px" fetchpriority="high" />
+  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="preload" as="image" type="image/avif" href="assets/avatar.avif?v=23" imagesrcset="assets/avatar-800.avif?v=23 800w, assets/avatar.avif?v=23 1151w" imagesizes="(max-width: 860px) 88vw, 600px" fetchpriority="high" />
 
   <script type="importmap">
     {
@@ -69,14 +192,15 @@
         <span class="dot"></span> Открыт для новых проектов
       </p>
 
-      <h1 class="hero__title" aria-label="Привет, я Егор">
+      <h1 class="hero__title" aria-label="Привет, я Егор — разработка сайтов на Tilda под ключ">
         <span class="hero__line" data-split>Привет,</span>
         <span class="hero__line" data-split>я&nbsp;Егор</span>
+        <span class="visually-hidden"> — разработка сайтов на Tilda под ключ</span>
       </h1>
 
       <!-- Аватар. data-avatar="assets/avatar.png" — картинка с 3D-наклоном,
            data-avatar="assets/avatar.glb" — 3D-модель, пусто — временная заглушка -->
-      <div class="hero__stage" data-avatar="assets/avatar.webp?v=22" data-avatar-avif="assets/avatar.avif?v=22" data-avatar-small="assets/avatar-800.webp?v=22" data-avatar-avif-small="assets/avatar-800.avif?v=22">
+      <div class="hero__stage" data-avatar="assets/avatar.webp?v=23" data-avatar-avif="assets/avatar.avif?v=23" data-avatar-small="assets/avatar-800.webp?v=23" data-avatar-avif-small="assets/avatar-800.avif?v=23">
         <div class="orbit orbit--1" aria-hidden="true"></div>
         <div class="orbit orbit--2" aria-hidden="true"></div>
         <canvas class="hero__canvas" aria-label="3D-персонаж Егора"></canvas>
@@ -90,7 +214,7 @@
 
       <div class="hero__bottom">
         <p class="hero__lead reveal">
-          Веб-дизайнер и&nbsp;Tilda-разработчик. Проектирую и&nbsp;собираю сайты, которые <em>выглядят дорого</em> и&nbsp;продают.
+          Разработка сайтов на&nbsp;Tilda под ключ и&nbsp;интеграция с&nbsp;Airtable и&nbsp;Collabza. Проектирую и&nbsp;собираю сайты, которые <em>выглядят дорого</em> и&nbsp;продают.
         </p>
 
         <div class="hero__actions reveal">
@@ -160,6 +284,8 @@
             <li><i class="ico ico--code">&lt;/&gt;</i>HTML / CSS</li>
             <li><i class="ico ico--js">JS</i>JavaScript</li>
             <li><i class="ico ico--react"><svg viewBox="-11 -10 22 20" fill="none" stroke="currentColor" stroke-width="1"><circle r="2" fill="currentColor" stroke="none"/><ellipse rx="10" ry="4"/><ellipse rx="10" ry="4" transform="rotate(60)"/><ellipse rx="10" ry="4" transform="rotate(120)"/></svg></i>React</li>
+            <li><i class="ico ico--airtable" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M11.1 3.3 3.4 6.5c-.4.2-.4.8 0 1l7.8 3.1c.5.2 1.1.2 1.6 0l7.8-3.1c.4-.2.4-.8 0-1l-7.8-3.2c-.5-.2-1.1-.2-1.7 0z" fill="#fcb400"/><path d="M12.9 12.4v7.7c0 .4.4.6.7.5l8.7-3.4c.2-.1.3-.3.3-.5V9c0-.4-.4-.6-.7-.5l-8.7 3.4c-.2.1-.3.3-.3.5z" fill="#18bfff"/><path d="M10.9 12.8 2.8 8.9c-.3-.2-.8.1-.8.5v7.4c0 .3.2.5.4.6l8.4 4.2c.3.2.7-.1.7-.5v-7.6c0-.3-.2-.6-.6-.7z" fill="#f82b60"/></svg></i>Airtable</li>
+            <li><i class="ico ico--collabza" aria-hidden="true">C</i>Collabza</li>
             <li><i class="ico ico--ai">✦</i>Нейросети</li>
           </ul>
         </article>
@@ -228,8 +354,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>iceberg</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/iceberg-poster.avif?v=22" />
-                <img src="assets/works/iceberg-poster.webp?v=22" width="900" height="591" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/iceberg-poster.avif?v=23" />
+                <img src="assets/works/iceberg-poster.webp?v=23" width="900" height="591" alt="Сайт ICEBERG — лендинг пресейла криптотокена" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -249,8 +375,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>city-fulfillment</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/city-poster.avif?v=22" />
-                <img src="assets/works/city-poster.webp?v=22" width="900" height="591" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/city-poster.avif?v=23" />
+                <img src="assets/works/city-poster.webp?v=23" width="900" height="591" alt="Сайт CITY Фулфилмент — сайт фулфилмент-оператора" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -270,8 +396,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>expertiza</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/expertiza-poster.avif?v=22" />
-                <img src="assets/works/expertiza-poster.webp?v=22" width="900" height="591" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/expertiza-poster.avif?v=23" />
+                <img src="assets/works/expertiza-poster.webp?v=23" width="900" height="591" alt="Сайт ЕРЦСЭИ — центр судебных экспертиз" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -291,8 +417,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>milton.ru</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/milton-poster.avif?v=22" />
-                <img src="assets/works/milton-poster.webp?v=22" width="900" height="591" alt="Сайт Milton Group — промышленная компания" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/milton-poster.avif?v=23" />
+                <img src="assets/works/milton-poster.webp?v=23" width="900" height="591" alt="Сайт Milton Group — промышленная компания" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -312,8 +438,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>energy-business</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/energy-poster.avif?v=22" />
-                <img src="assets/works/energy-poster.webp?v=22" width="900" height="591" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/energy-poster.avif?v=23" />
+                <img src="assets/works/energy-poster.webp?v=23" width="900" height="591" alt="Сайт Энергия бизнеса — консалтинговая компания" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -333,8 +459,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>vizy.kz</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/vizy-poster.avif?v=22" />
-                <img src="assets/works/vizy-poster.webp?v=22" width="900" height="591" alt="Сайт VIZY.KZ — центр визовой поддержки в Алматы" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/vizy-poster.avif?v=23" />
+                <img src="assets/works/vizy-poster.webp?v=23" width="900" height="591" alt="Сайт VIZY.KZ — центр визовой поддержки в Алматы" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -354,8 +480,8 @@
             <div class="work__bar" aria-hidden="true"><i></i><i></i><i></i><span>traiv</span></div>
             <div class="work__screen">
               <picture>
-                <source type="image/avif" srcset="assets/works/traiv-poster.avif?v=22" />
-                <img src="assets/works/traiv-poster.webp?v=22" width="900" height="591" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
+                <source type="image/avif" srcset="assets/works/traiv-poster.avif?v=23" />
+                <img src="assets/works/traiv-poster.webp?v=23" width="900" height="591" alt="Сайт TRAIV — производитель крепежа" loading="lazy" decoding="async" />
               </picture>
             </div>
           </div>
@@ -733,8 +859,8 @@
     <a href="#top">Наверх ↑</a>
   </footer>
 
-  <script src="main.js?v=22" defer></script>
-  <script type="module" src="avatar.js?v=22"></script>
-  <script src="brief.js?v=22" defer></script>
+  <script src="main.js?v=23" defer></script>
+  <script type="module" src="avatar.js?v=23"></script>
+  <script src="brief.js?v=23" defer></script>
 </body>
 </html>
