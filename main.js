@@ -161,7 +161,8 @@
     burger.setAttribute('aria-expanded', 'false');
   }));
 
-  const links = [...document.querySelectorAll('.nav__links a')];
+  // подсветка пункта меню — только для якорей на этой же странице (на странице «Портфолио» ссылки ведут на главную)
+  const links = [...document.querySelectorAll('.nav__links a')].filter((a) => a.getAttribute('href').startsWith('#'));
   const sections = links.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver((entries) => {
@@ -221,7 +222,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=25';
+  const VER = '?v=26';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
