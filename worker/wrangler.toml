@@ -1,4 +1,4 @@
-# Настройки Cloudflare Worker: уведомление в Telegram, когда на сайте собрали сообщение (без данных о человеке).
+# Настройки Cloudflare Worker: уведомления в Telegram и анонимная статистика посещений (без данных о людях).
 # Cloudflare собирает воркер из этой папки: в настройках сборки Root directory = worker
 #
 # name должен совпадать с именем воркера в панели Cloudflare.
@@ -24,6 +24,20 @@ ALLOWED_ORIGIN = "https://ivanovdev.site, https://www.ivanovdev.site"
 name = "FORM_LIMIT"
 namespace_id = "1001"
 simple = { limit = 10, period = 60 }
+
+# Защита статистики от накрутки: не больше 60 просмотров в минуту на весь сайт (общий счётчик, IP не учитывается)
+[[ratelimits]]
+name = "STATS_LIMIT"
+namespace_id = "1002"
+simple = { limit = 60, period = 60 }
+
+# Хранилище дневных счётчиков посещений. id не указан — Cloudflare создаст хранилище сам при первой выкладке
+[[kv_namespaces]]
+binding = "STATS"
+
+# Утренняя сводка в Telegram: 06:00 UTC = 09:00 по Москве
+[triggers]
+crons = ["0 6 * * *"]
 
 # Журнал запросов в панели выключен: в нём сохранялись бы IP-адреса посетителей
 [observability]
