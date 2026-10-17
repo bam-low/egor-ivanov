@@ -222,7 +222,7 @@
 
   // ============ Работы ============
   const works = [...document.querySelectorAll('[data-work]')];
-  const VER = '?v=27';
+  const VER = '?v=28';
 
   // Формат, который выбрал браузер для обложки (AVIF, если поддерживает, иначе WebP) —
   // в нём же грузим длинный скриншот и полную версию
@@ -475,4 +475,42 @@
   }
 
   document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+  // ============ Анонимная статистика посещений ============
+  // Отправляем только: какая страница, откуда пришли (категория, без адреса), телефон или компьютер и новое ли посещение.
+  // Ни cookies, ни идентификаторов: «новое посещение» — первый просмотр в этой вкладке (флаг в sessionStorage, с устройства не уходит).
+  // ?nostat в адресе — больше не считать этот браузер (для своих заходов), ?stat — снова считать.
+  (() => {
+    const url = document.body.dataset.stats;
+    const page = document.body.dataset.page;
+    if (!url || !page || navigator.webdriver || /bot|crawl|spider|slurp|yandex|google|lighthouse|headless/i.test(navigator.userAgent)) return;
+    const store = (type) => { try { return window[type]; } catch { return null; } };
+    const local = store('localStorage'), session = store('sessionStorage');
+    const params = new URLSearchParams(location.search);
+    try {
+      if (params.has('nostat')) local?.setItem('ivn-nostat', '1');
+      if (params.has('stat')) local?.removeItem('ivn-nostat');
+      if (local?.getItem('ivn-nostat')) return;
+    } catch { /* хранилище недоступно — просто считаем */ }
+    let isNew = 1;
+    try { isNew = session?.getItem('ivn-visit') ? 0 : 1; session?.setItem('ivn-visit', '1'); } catch { /* считаем новым */ }
+    // откуда пришли — только категория источника
+    let src = 'direct';
+    try {
+      const host = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+      if (!host || host === location.hostname.replace(/^www\./, '')) src = 'direct';
+      else if (/(^|\.)(yandex\.[a-z.]+|ya\.ru)$/.test(host)) src = 'yandex';
+      else if (/(^|\.)google\.[a-z.]+$/.test(host)) src = 'google';
+      else if (/(^|\.)(t\.me|telegram\.(org|me))$/.test(host)) src = 'telegram';
+      else if (/(^|\.)(vk\.com|vk\.ru)$/.test(host)) src = 'vk';
+      else if (/(^|\.)kwork\.ru$/.test(host)) src = 'kwork';
+      else src = 'other';
+    } catch { src = 'other'; }
+    const dev = window.matchMedia('(max-width: 860px), (pointer: coarse)').matches ? 'm' : 'd';
+    const body = JSON.stringify({ t: 'pv', p: page, s: src, d: dev, v: isNew });
+    // text/plain — без предварительного запроса; sendBeacon не задерживает загрузку и уход со страницы
+    if (!(navigator.sendBeacon && navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' })))) {
+      fetch(url, { method: 'POST', body, mode: 'no-cors', keepalive: true }).catch(() => {});
+    }
+  })();
 })();
